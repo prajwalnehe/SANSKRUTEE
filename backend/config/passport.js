@@ -11,7 +11,7 @@ export function setupPassport() {
 
   const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
   const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
-  const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:5000';
+  const BACKEND_URL = process.env.BACKEND_URL || `http://localhost:${process.env.PORT || 7000}`;
 
   if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
     console.warn('[passport] Missing GOOGLE_CLIENT_ID/GOOGLE_CLIENT_SECRET');

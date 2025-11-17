@@ -1,4 +1,4 @@
-const API_URL = `${import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000'}/api`;
+const API_URL = `${import.meta.env.VITE_BACKEND_URL || 'http://localhost:7000'}/api`;
 
 export const fetchSarees = async (category) => {
   try {
