@@ -72,7 +72,7 @@ export const getProducts = async (req, res) => {
         productObj.images = productObj.images.map(img => {
           if (img && img.url && !img.url.startsWith('http')) {
             // If the URL is relative, make it absolute
-            const baseUrl = process.env.BASE_URL || 'http://localhost:5000';
+            const baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT || 7000}`;
             return {
               ...img,
               url: img.url.startsWith('/') ? `${baseUrl}${img.url}` : `${baseUrl}/${img.url}`
@@ -110,7 +110,7 @@ export const getProductById = async (req, res) => {
       productObj.images = productObj.images.map(img => {
         if (img && img.url && !img.url.startsWith('http')) {
           // If the URL is relative, make it absolute
-          const baseUrl = process.env.BASE_URL || 'http://localhost:5000';
+          const baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT || 6000}`;
           return {
             ...img,
             url: img.url.startsWith('/') ? `${baseUrl}${img.url}` : `${baseUrl}/${img.url}`
