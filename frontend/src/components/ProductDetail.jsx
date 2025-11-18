@@ -306,7 +306,7 @@ const ProductDetail = () => {
               <div className="fixed bottom-0 left-0 right-0 bg-white shadow-lg p-2 z-50 sm:hidden">
                 <div className="flex gap-2 max-w-md mx-auto">
                   <button 
-                    className="flex-1 bg-white text-[#800020] py-2.5 rounded-lg flex items-center justify-center space-x-1.5 hover:bg-[#660019] hover:text-white transition-colors disabled:opacity-70 cursor-pointer shadow-sm border border-[#800020] text-sm"
+                    className="flex-1 bg-white text-[#3E5F7A] py-2.5 rounded-lg flex items-center justify-center space-x-1.5 hover:bg-[#2D4860] hover:text-white transition-colors disabled:opacity-70 cursor-pointer shadow-sm border border-[#3E5F7A] text-sm"
                     onClick={handleAddToCart}
                     disabled={isAdding}
                   >
@@ -314,7 +314,7 @@ const ProductDetail = () => {
                     <span className="font-medium">{isAdding ? 'Adding...' : 'Add to Cart'}</span>
                   </button>
                   <button 
-                    className="flex-1 bg-[#800020] text-white py-2.5 rounded-lg flex items-center justify-center space-x-1.5 hover:bg-[#660019] transition-colors cursor-pointer shadow-sm border border-[#800020] text-sm"
+                    className="flex-1 bg-[#3E5F7A] text-white py-2.5 rounded-lg flex items-center justify-center space-x-1.5 hover:bg-[#2D4860] transition-colors cursor-pointer shadow-sm border border-[#3E5F7A] text-sm"
                     onClick={handleBuyNow}
                   >
                     <FaBolt className="h-4 w-4" />
@@ -326,7 +326,7 @@ const ProductDetail = () => {
               {/* Regular Buttons - Hidden on mobile */}
               <div className="hidden sm:flex flex-col sm:flex-row gap-3 mb-6">
                 <button 
-                  className="flex-1 bg-white text-[#800020] py-2.5 px-5 rounded-lg flex items-center justify-center space-x-2 hover:bg-[#660019] hover:text-white transition-colors disabled:opacity-70 cursor-pointer shadow-sm border border-[#800020]"
+                  className="flex-1 bg-white text-[#3E5F7A] py-2.5 px-5 rounded-lg flex items-center justify-center space-x-2 hover:bg-[#2D4860] hover:text-white transition-colors disabled:opacity-70 cursor-pointer shadow-sm border border-[#3E5F7A]"
                   onClick={handleAddToCart}
                   disabled={isAdding}
                 >
@@ -334,7 +334,7 @@ const ProductDetail = () => {
                   <span className="font-medium">{isAdding ? 'Adding...' : 'Add to Cart'}</span>
                 </button>
                 <button 
-                  className="flex-1 bg-[#800020] text-white py-2.5 px-5 rounded-lg flex items-center justify-center space-x-2 hover:bg-[#660019] transition-colors cursor-pointer shadow-sm border border-[#800020]"
+                  className="flex-1 bg-[#3E5F7A] text-white py-2.5 px-5 rounded-lg flex items-center justify-center space-x-2 hover:bg-[#2D4860] transition-colors cursor-pointer shadow-sm border border-[#3E5F7A]"
                   onClick={handleBuyNow}
                 >
                   <FaBolt className="h-5 w-5" />

@@ -150,7 +150,7 @@ export default function FlipkartAccountSettings() {
       onClick={isLogout ? handleLogout : () => handleSectionChange(section)}
       className={`flex items-center justify-between px-4 lg:px-6 py-3.5 cursor-pointer transition-all duration-200 rounded-lg mx-2 lg:mx-3 mb-1 ${
         activeSection === section && !isLogout
-          ? 'bg-gradient-to-r from-[#800020] to-[#a0002a] text-white shadow-md' 
+          ? 'bg-gradient-to-r from-[#3E5F7A] to-[#5A7A94] text-white shadow-md' 
           : isLogout
           ? 'hover:bg-red-50 text-red-600'
           : isAdmin
@@ -182,8 +182,8 @@ export default function FlipkartAccountSettings() {
       {loading ? (
         <div className="flex items-center justify-center min-h-screen">
           <div className="relative">
-            <div className="animate-spin rounded-full h-16 w-16 border-t-3 border-b-3 border-[#800020]"></div>
-            <div className="absolute inset-0 animate-ping rounded-full h-16 w-16 border-2 border-[#a0002a] opacity-20"></div>
+            <div className="animate-spin rounded-full h-16 w-16 border-t-3 border-b-3 border-[#3E5F7A]"></div>
+            <div className="absolute inset-0 animate-ping rounded-full h-16 w-16 border-2 border-[#5A7A94] opacity-20"></div>
           </div>
         </div>
       ) : (
@@ -191,7 +191,7 @@ export default function FlipkartAccountSettings() {
           {/* Mobile Header */}
           <div className="lg:hidden bg-white shadow-md px-4 py-4 flex items-center justify-between sticky z-40" style={{ top: 'var(--app-header-height, 0px)' }}>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#800020] to-[#a0002a] flex items-center justify-center text-white text-lg font-bold shadow-lg">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#3E5F7A] to-[#5A7A94] flex items-center justify-center text-white text-lg font-bold shadow-lg">
                 {user.firstName.charAt(0)}
               </div>
               <div>
@@ -232,7 +232,7 @@ export default function FlipkartAccountSettings() {
             {/* User Profile - Desktop only */}
             <div className="hidden lg:block p-6 border-b bg-gradient-to-r from-gray-50 to-gray-100">
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#800020] to-[#a0002a] flex items-center justify-center text-white text-2xl font-bold shadow-lg ring-4 ring-red-100">
+                <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#3E5F7A] to-[#5A7A94] flex items-center justify-center text-white text-2xl font-bold shadow-lg ring-4 ring-red-100">
                   {user.firstName.charAt(0)}
                 </div>
                 <div>
@@ -297,19 +297,19 @@ export default function FlipkartAccountSettings() {
                 <div className="grid grid-cols-3 gap-2">
                   <button
                     onClick={() => handleSectionChange('orders')}
-                    className={`px-3 py-2 rounded-lg text-sm font-medium ${activeSection === 'orders' ? 'bg-[#800020] text-white' : 'bg-gray-100 text-gray-700'}`}
+                    className={`px-3 py-2 rounded-lg text-sm font-medium ${activeSection === 'orders' ? 'bg-[#3E5F7A] text-white' : 'bg-gray-100 text-gray-700'}`}
                   >
                     Your Orders
                   </button>
                   <button
                     onClick={() => handleSectionChange('profile')}
-                    className={`px-3 py-2 rounded-lg text-sm font-medium ${activeSection === 'profile' ? 'bg-[#800020] text-white' : 'bg-gray-100 text-gray-700'}`}
+                    className={`px-3 py-2 rounded-lg text-sm font-medium ${activeSection === 'profile' ? 'bg-[#3E5F7A] text-white' : 'bg-gray-100 text-gray-700'}`}
                   >
                     Profile
                   </button>
                   <button
                     onClick={() => handleSectionChange('addresses')}
-                    className={`px-3 py-2 rounded-lg text-sm font-medium ${activeSection === 'addresses' ? 'bg-[#800020] text-white' : 'bg-gray-100 text-gray-700'}`}
+                    className={`px-3 py-2 rounded-lg text-sm font-medium ${activeSection === 'addresses' ? 'bg-[#3E5F7A] text-white' : 'bg-gray-100 text-gray-700'}`}
                   >
                     Addresses
                   </button>
@@ -321,7 +321,7 @@ export default function FlipkartAccountSettings() {
                   <div className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden">
                     <div className="p-4 sm:p-6 border-b bg-gradient-to-r from-gray-50 to-gray-100">
                       <h2 className="text-lg sm:text-xl font-bold text-gray-800 flex items-center gap-2">
-                        <svg className="w-5 h-5 sm:w-6 sm:h-6 text-[#800020]" fill="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 sm:w-6 sm:h-6 text-[#3E5F7A]" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
                         </svg>
                         Personal Information
@@ -334,7 +334,7 @@ export default function FlipkartAccountSettings() {
                           <input 
                             type="text" 
                             value={user.firstName}
-                            className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#800020] transition-all"
+                            className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#3E5F7A] transition-all"
                             readOnly
                           />
                         </div>
@@ -355,7 +355,7 @@ export default function FlipkartAccountSettings() {
                   <div className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden">
                     <div className="p-4 sm:p-6 border-b bg-gradient-to-r from-gray-50 to-gray-100">
                       <h2 className="text-lg sm:text-xl font-bold text-gray-800 flex items-center gap-2">
-                        <svg className="w-5 h-5 sm:w-6 sm:h-6 text-[#800020]" fill="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 sm:w-6 sm:h-6 text-[#3E5F7A]" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
                         </svg>
                         Email Address
@@ -375,7 +375,7 @@ export default function FlipkartAccountSettings() {
                   <div className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden">
                     <div className="p-4 sm:p-6 border-b bg-gradient-to-r from-gray-50 to-gray-100">
                       <h2 className="text-lg sm:text-xl font-bold text-gray-800 flex items-center gap-2">
-                        <svg className="w-5 h-5 sm:w-6 sm:h-6 text-[#800020]" fill="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 sm:w-6 sm:h-6 text-[#3E5F7A]" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/>
                         </svg>
                         Mobile Number
@@ -395,7 +395,7 @@ export default function FlipkartAccountSettings() {
                   <div className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden">
                     <div className="p-4 sm:p-6 border-b bg-gradient-to-r from-gray-50 to-gray-100">
                       <h2 className="text-lg sm:text-xl font-bold text-gray-800 flex items-center gap-2">
-                        <svg className="w-5 h-5 sm:w-6 sm:h-6 text-[#800020]" fill="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 sm:w-6 sm:h-6 text-[#3E5F7A]" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
                         </svg>
                         FAQs
@@ -442,14 +442,14 @@ export default function FlipkartAccountSettings() {
                   {loadingOrders ? (
                     <div className="flex justify-center py-12">
                       <div className="relative">
-                        <div className="animate-spin rounded-full h-12 w-12 border-t-3 border-b-3 border-[#800020]"></div>
-                        <div className="absolute inset-0 animate-ping rounded-full h-12 w-12 border-2 border-[#a0002a] opacity-20"></div>
+                        <div className="animate-spin rounded-full h-12 w-12 border-t-3 border-b-3 border-[#3E5F7A]"></div>
+                        <div className="absolute inset-0 animate-ping rounded-full h-12 w-12 border-2 border-[#5A7A94] opacity-20"></div>
                       </div>
                     </div>
                   ) : orders.length > 0 ? (
                     <div className="space-y-6">
                       {orders.map((order) => (
-                        <div key={order._id} className="border-2 border-gray-200 rounded-xl p-4 sm:p-5 hover:border-[#800020] hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-white to-gray-50">
+                        <div key={order._id} className="border-2 border-gray-200 rounded-xl p-4 sm:p-5 hover:border-[#3E5F7A] hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-white to-gray-50">
                           <div className="flex items-center justify-between">
                             <div className="text-sm text-gray-600">Order ID: <span className="font-mono">{String(order._id).slice(-8)}</span></div>
                             <div className="flex items-center gap-3">
@@ -487,7 +487,7 @@ export default function FlipkartAccountSettings() {
                       </div>
                       <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2">No Orders Yet</h3>
                       <p className="text-gray-600 text-sm sm:text-base mb-6">You haven't placed any orders yet. Start shopping now!</p>
-                      <button onClick={() => navigate('/shop')} className="px-6 sm:px-8 py-3 bg-gradient-to-r from-[#800020] to-[#a0002a] text-white rounded-xl font-medium hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+                      <button onClick={() => navigate('/shop')} className="px-6 sm:px-8 py-3 bg-gradient-to-r from-[#3E5F7A] to-[#5A7A94] text-white rounded-xl font-medium hover:shadow-lg transition-all duration-300 transform hover:scale-105">
                         Start Shopping
                       </button>
                     </div>
@@ -499,7 +499,7 @@ export default function FlipkartAccountSettings() {
                 <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
                   <div className="p-4 sm:p-6 border-b bg-gradient-to-r from-gray-50 to-gray-100">
                     <h2 className="text-lg sm:text-xl font-bold text-gray-800 flex items-center gap-2">
-                      <svg className="w-5 h-5 sm:w-6 sm:h-6 text-[#800020]" fill="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-5 h-5 sm:w-6 sm:h-6 text-[#3E5F7A]" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
                       </svg>
                       My Addresses
@@ -509,18 +509,18 @@ export default function FlipkartAccountSettings() {
                     {loadingAddresses ? (
                       <div className="flex justify-center py-12">
                         <div className="relative">
-                          <div className="animate-spin rounded-full h-12 w-12 border-t-3 border-b-3 border-[#800020]"></div>
-                          <div className="absolute inset-0 animate-ping rounded-full h-12 w-12 border-2 border-[#a0002a] opacity-20"></div>
+                          <div className="animate-spin rounded-full h-12 w-12 border-t-3 border-b-3 border-[#3E5F7A]"></div>
+                          <div className="absolute inset-0 animate-ping rounded-full h-12 w-12 border-2 border-[#5A7A94] opacity-20"></div>
                         </div>
                       </div>
                     ) : addresses.length > 0 ? (
                       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                         {addresses.map((address, index) => (
-                          <div key={index} className="border-2 border-gray-200 rounded-xl p-4 sm:p-5 hover:border-[#800020] hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-white to-gray-50">
+                          <div key={index} className="border-2 border-gray-200 rounded-xl p-4 sm:p-5 hover:border-[#3E5F7A] hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-white to-gray-50">
                             <div className="flex justify-between items-start mb-3">
                               <h3 className="font-bold text-gray-800 text-base sm:text-lg">{address.fullName}</h3>
                               {address.isDefault && (
-                                <span className="px-3 py-1 text-xs font-bold bg-gradient-to-r from-[#800020] to-[#a0002a] text-white rounded-full shadow-sm">
+                                <span className="px-3 py-1 text-xs font-bold bg-gradient-to-r from-[#3E5F7A] to-[#5A7A94] text-white rounded-full shadow-sm">
                                   Default
                                 </span>
                               )}
@@ -534,7 +534,7 @@ export default function FlipkartAccountSettings() {
                                 {address.city}, {address.state} - {address.pincode}
                               </p>
                               <div className="flex items-center gap-2 pt-2 mt-2 border-t border-gray-200">
-                                <svg className="w-4 h-4 text-[#800020]" fill="currentColor" viewBox="0 0 24 24">
+                                <svg className="w-4 h-4 text-[#3E5F7A]" fill="currentColor" viewBox="0 0 24 24">
                                   <path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/>
                                 </svg>
                                 <span className="font-medium text-gray-700">{address.phoneNumber}</span>
@@ -559,7 +559,7 @@ export default function FlipkartAccountSettings() {
                         <p className="text-gray-600 text-sm sm:text-base mb-6">You haven't added any addresses yet.</p>
                         <button 
                           onClick={() => window.location.href = '/address'}
-                          className="px-6 sm:px-8 py-3 bg-gradient-to-r from-[#800020] to-[#a0002a] text-white rounded-xl font-medium hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+                          className="px-6 sm:px-8 py-3 bg-gradient-to-r from-[#3E5F7A] to-[#5A7A94] text-white rounded-xl font-medium hover:shadow-lg transition-all duration-300 transform hover:scale-105"
                         >
                           Add New Address
                         </button>

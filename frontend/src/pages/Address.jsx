@@ -119,7 +119,7 @@ export default function AddressForm() {
         description: 'Order Payment',
         order_id: order.id,
         prefill: { name: formData.name || '', contact: formData.mobile || '' },
-        theme: { color: '#800020' },
+        theme: { color: '#3E5F7A' },
         handler: async function (response) {
           try {
             const r = await verifyPayment(response);
@@ -594,7 +594,7 @@ export default function AddressForm() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className={`bg-[#800020] hover:bg-[#660019] text-white px-8 py-3 rounded font-medium transition-colors cursor-pointer w-full sm:w-auto text-center ${saving ? 'opacity-70' : ''}`}
+                  className={`bg-[#3E5F7A] hover:bg-[#2D4860] text-white px-8 py-3 rounded font-medium transition-colors cursor-pointer w-full sm:w-auto text-center ${saving ? 'opacity-70' : ''}`}
                 >
                   SAVE AND DELIVER HERE
                 </button>
@@ -693,7 +693,7 @@ export default function AddressForm() {
             <button 
               onClick={handlePayment}
               disabled={!hasSavedAddress}
-              className={`w-full mt-4 py-3 px-4 rounded-md transition-colors font-medium cursor-pointer ${hasSavedAddress ? 'bg-[#800020] text-white hover:bg-[#660019]' : 'bg-gray-300 text-gray-600 cursor-not-allowed'}`}
+              className={`w-full mt-4 py-3 px-4 rounded-md transition-colors font-medium cursor-pointer ${hasSavedAddress ? 'bg-[#3E5F7A] text-white hover:bg-[#2D4860]' : 'bg-gray-300 text-gray-600 cursor-not-allowed'}`}
             >
               PROCEED TO PAYMENT
             </button>

@@ -8,82 +8,89 @@ const Header = () => {
 
   const categories = [
     { 
-      name: 'SILK', 
-      path: '/category/silk',
+      name: 'COLLECTION', 
+      path: '/category/Collection',
       subcategories: [
-        { name: 'SOFT SILK SAREES', path: '/category/silk/soft-silk-sarees' },
-        { name: 'KANJIVARAM SILK SAREES', path: '/category/silk/kanjivaram-silk-sarees' },
-        { name: 'BANARASI SILK SAREES', path: '/category/silk/banarasi-silk-sarees' },
-        { name: 'MAHESHWARI SILK SAREES', path: '/category/silk/maheshwari-silk-sarees' },
-        { name: 'RAW SILK SAREES', path: '/category/silk/raw-silk-sarees' },
-        { name: 'MYSORE SILK SAREES', path: '/category/silk/mysore-silk-sarees' },
-        { name: 'SAMBALPURI SILK SAREES', path: '/category/silk/sambalpuri-silk-sarees' },
-        { name: 'KALAMKARI PRINT SILK SAREES', path: '/category/silk/kalamkari-print-silk-sarees' }
-
+        { name: 'Swadhyaya collection', path: '/category/Collection/swadhyaya-collection' },
+        { name: 'Sundowner collection', path: '/category/Collection/sundowner-collection' },
+        { name: 'Deewangi collection', path: '/category/Collection/deewangi-collection' },
+        { name: 'Kaiv collection', path: '/category/Collection/kaiv-collection' },
+        { name: 'Mehrang collection', path: '/category/Collection/mehrang-collection' },
+        { name: 'Virsa collection', path: '/category/Collection/virsa-collection' },
+        { name: 'Barati broz collection', path: '/category/Collection/barati-broz-collection' },
+        { name: 'Paws collection', path: '/category/Collection/paws-collection' }
       ]
     },
     { 
-      name: 'COTTON', 
-      path: '/category/cotton',
+      name: 'MEN', 
+      path: '/category/Men',
       subcategories: [
-  { name: 'BENGALI COTTON SAREES', path: '/category/cotton/bengali-cotton-sarees' },
-  { name: 'MAHESHWARI COTTON SAREES', path: '/category/cotton/maheshwari-cotton-sarees' },
-  { name: 'JAIPUR COTTON SAREES', path: '/category/cotton/jaipur-cotton-sarees' },
-  { name: 'SOUTH COTTON SAREES', path: '/category/cotton/south-cotton-sarees' },
-  { name: 'OFFICE WEAR COTTON SAREES', path: '/category/cotton/office-wear-cotton-sarees' },
-  { name: 'DR.KHADI COTTON SAREES', path: '/category/cotton/dr-khadi-cotton-sarees' },
-  { name: 'BLOCK PRINTED COTTON SAREES', path: '/category/cotton/block-printed-cotton-sarees' },
-  { name: 'BAGRU PRINT COTTON SAREES', path: '/category/cotton/bagru-print-cotton-sarees' },
-  { name: 'AJRAKH PRINT COTTON SAREES', path: '/category/cotton/ajrakh-print-cotton-sarees' },
-  { name: 'IKKAT COTTON SAREES', path: '/category/cotton/ikkat-cotton-sarees' },
-  { name: 'CHANDERI COTTON SILKS', path: '/category/cotton/chanderi-cotton-silks' },
-  { name: 'KALAMKARI COTTON SAREES', path: '/category/cotton/kalamkari-cotton-sarees' },]
-
+        { name: 'Bestsellers', path: '/category/Men/bestsellers' },
+        { name: 'New Arrivals', path: '/category/Men/new-arrivals' },
+        { name: 'Kurtas', path: '/category/Men/kurtas' },
+        { name: 'Kurta Sets', path: '/category/Men/kurta-sets' },
+        { name: 'Kurta Dupatta Sets', path: '/category/Men/kurta-dupatta-sets' },
+        { name: 'Sherwanis', path: '/category/Men/sherwanis' },
+        { name: 'Nehru Jackets', path: '/category/Men/nehru-jackets' },
+        { name: 'Blazers', path: '/category/Men/blazers' },
+        { name: 'Plus Size', path: '/category/Men/plus-size' },
+        { name: 'Bottomwear', path: '/category/Men/bottomwear' },
+        { name: 'Jhodpuris', path: '/category/Men/jhodpuris' },
+        { name: 'Shirts', path: '/category/Men/shirts' },
+        { name: 'Dupattas & Accessories', path: '/category/Men/dupattas-accessories' },
+        { name: 'Comfort Wear', path: '/category/Men/comfort-wear' },
+        { name: 'Co-ord Sets', path: '/category/Men/co-ord-sets' },
+        { name: 'Shop All', path: '/category/Men/shop-all' }
+      ]
     },
     {
-      name: 'REGIONAL',
-      path: '/category/regional',
+      name: 'WOMEN',
+      path: '/category/Women',
       subcategories: [
-        { name: 'SAMBALPURI REGIONAL SAREES', path: '/category/regional/sambalpuri-regional-sarees' },
-        { name: 'KANJIVARAM REGIONAL SAREES', path: '/category/regional/kanjivaram-regional-sarees' },
-        { name: 'BENGALI REGIONAL SAREES', path: '/category/regional/bengali-regional-sarees' },
-        { name: 'MYSORE REGIONAL SAREES', path: '/category/regional/mysore-regional-sarees' },
-        { name: 'MAHESHWARI REGIONAL SAREES', path: '/category/regional/maheshwari-regional-sarees' },
-        { name: 'KARNATAKA REGIONAL SAREES', path: '/category/regional/karnataka-regional-sarees' },
-        { name: 'TAMILNADU REGIONAL SAREES', path: '/category/regional/tamilnadu-regional-sarees' },
-        { name: 'BANARASI REGIONAL SAREES', path: '/category/regional/banarasi-regional-sarees' },
-        { name: 'BANARASI REGIONAL DUPATTA', path: '/category/regional/banarasi-regional-dupatta' }
+        { name: 'New Arrivals', path: '/category/Women/new-arrivals' },
+        { name: 'Kurtis', path: '/category/Women/kurtis' },
+        { name: 'Kurti Sets', path: '/category/Women/kurti-sets' },
+        { name: 'Comfort Wear', path: '/category/Women/comfort-wear' },
+        { name: 'Co-ord Sets', path: '/category/Women/co-ord-sets' },
+        { name: 'Shop All', path: '/category/Women/shop-all' }
       ]
     },
     { 
-      name: 'BANARASI', 
-      path: '/category/banarasi',
+      name: 'BOYS', 
+      path: '/category/Boys',
       subcategories: [
-        { name: 'BANARASI SAREES', path: '/category/banarasi/banarasi-sarees' },
-        { name: 'BANARASI DUPATTA', path: '/category/banarasi/banarasi-dupatta' },
-        { name: 'BANARASI DRESS MATERIAL', path: '/category/banarasi/banarasi-dress-material' }
+        { name: 'Bestsellers', path: '/category/Boys/bestsellers' },
+        { name: 'New Arrivals', path: '/category/Boys/new-arrivals' },
+        { name: 'Kurta Sets', path: '/category/Boys/kurta-sets' },
+        { name: 'Nehru Jackets', path: '/category/Boys/nehru-jackets' },
+        { name: 'Sherwani Set', path: '/category/Boys/sherwani-set' },
+        { name: 'Ethnic Shirt', path: '/category/Boys/ethnic-shirt' },
+        { name: 'Jodhpuri Set', path: '/category/Boys/jodhpuri-set' },
+        { name: 'Comfort Wear', path: '/category/Boys/comfort-wear' },
+        { name: 'Shop All', path: '/category/Boys/shop-all' }
       ]
     },
     { 
-      name: 'DESIGNER SAREES', 
-      path: '/category/designer-sarees',
+      name: 'GIRLS', 
+      path: '/category/Girls',
       subcategories: [
-        { name: 'PARTY WEAR SAREE', path: '/category/designer-sarees/party-wear-saree' },
-        { name: 'WEDDING SAREES', path: '/category/designer-sarees/wedding-sarees' },
-        { name: 'FESTIVE SAREES', path: '/category/designer-sarees/festive-sarees' },
-        { name: 'BOLLYWOOD STYLE SAREES', path: '/category/designer-sarees/bollywood-style-sarees' },
-        { name: 'HEAVY EMBROIDERED SAREES', path: '/category/designer-sarees/heavy-embroidered-sarees' }
+        { name: 'Bestsellers', path: '/category/Girls/bestsellers' },
+        { name: 'New Arrivals', path: '/category/Girls/new-arrivals' },
+        { name: 'Dress', path: '/category/Girls/dress' },
+        { name: 'Kurti Set', path: '/category/Girls/kurti-set' },
+        { name: 'Lehenga Set', path: '/category/Girls/lehenga-set' },
+        { name: 'Anarkali', path: '/category/Girls/anarkali' },
+        { name: 'Comfort Wear', path: '/category/Girls/comfort-wear' },
+        { name: 'Shop All', path: '/category/Girls/shop-all' }
       ]
     },
     { 
-      name: 'PRINTED SAREES', 
-      path: '/category/printed-sarees',
+      name: 'SISHU', 
+      path: '/category/Sishu',
       subcategories: [
-        { name: 'FLORAL PRINTED SAREES', path: '/category/printed-sarees/floral-printed-sarees' },
-        { name: 'DIGITAL PRINTED SAREES', path: '/category/printed-sarees/digital-printed-sarees' },
-        { name: 'BLOCK PRINTED SAREES', path: '/category/printed-sarees/block-printed-sarees' },
-        { name: 'ABSTRACT PRINTED SAREES', path: '/category/printed-sarees/abstract-printed-sarees' },
-        { name: 'GEOMETRIC PRINTED SAREES', path: '/category/printed-sarees/geometric-printed-sarees' }
+        { name: 'Boys', path: '/category/Sishu/boys' },
+        { name: 'Girls', path: '/category/Sishu/girls' },
+        { name: 'Shop All', path: '/category/Sishu/shop-all' }
       ]
     },
   ];
