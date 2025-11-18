@@ -53,8 +53,16 @@ export default function FlipkartAccountSettings() {
       const userData = await api.me();
       const [firstName, ...lastNameParts] = userData.user?.name?.split(' ') || [];
       const lastName = lastNameParts.join(' ');
-      const adminStatus = localStorage.getItem('auth_is_admin') === 'true';
-      
+      // Derive admin from server response and sync to storage for route guards
+      const adminStatus = !!userData.user?.isAdmin;
+      try {
+        if (adminStatus) {
+          localStorage.setItem('auth_is_admin', 'true');
+        } else {
+          localStorage.removeItem('auth_is_admin');
+        }
+      } catch {}
+
       setUser({
         firstName: firstName || '',
         lastName: lastName || '',
