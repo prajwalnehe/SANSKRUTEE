@@ -16,9 +16,10 @@ const productSchema = new mongoose.Schema(
     product_info: {
       brand: { type: String },
       manufacturer: { type: String },
-      SareeLength: { type: String },
-      SareeMaterial: { type: String },
-      SareeColor: { type: String },
+      KurtiLength: { type: String },
+      KurtiMaterial: { type: String },
+      KurtiColor: { type: String },
+      SleeveLength: { type: String },
       IncludedComponents: { type: String },
     },
 

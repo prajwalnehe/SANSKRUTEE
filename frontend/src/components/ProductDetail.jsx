@@ -359,16 +359,22 @@ const ProductDetail = () => {
                   </div>
                   <div className="flex">
                     <span className="w-36 font-medium text-gray-600">Material:</span>
-                    <span>{saree.product_info?.SareeMaterial || 'N/A'}</span>
+                    <span>{saree.product_info?.KurtiMaterial || saree.product_info?.SareeMaterial || 'N/A'}</span>
                   </div>
                   <div className="flex">
                     <span className="w-36 font-medium text-gray-600">Color:</span>
-                    <span>{saree.product_info?.SareeColor || 'N/A'}</span>
+                    <span>{saree.product_info?.KurtiColor || saree.product_info?.SareeColor || 'N/A'}</span>
                   </div>
                   <div className="flex">
                     <span className="w-36 font-medium text-gray-600">Length:</span>
-                    <span>{saree.product_info?.SareeLength || 'N/A'}</span>
+                    <span>{saree.product_info?.KurtiLength || saree.product_info?.SareeLength || 'N/A'}</span>
                   </div>
+                  {saree.product_info?.SleeveLength && (
+                    <div className="flex">
+                      <span className="w-36 font-medium text-gray-600">Sleeve Length:</span>
+                      <span>{saree.product_info.SleeveLength}</span>
+                    </div>
+                  )}
                   {saree.product_info?.IncludedComponents && (
                     <div className="flex">
                       <span className="w-36 font-medium text-gray-600">Included:</span>
