@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 export default function ShopByGender() {
   const HEADER_HEIGHT_PX = 120;
 
+  // Desktop Images
   const desktopImages = [
     "https://res.cloudinary.com/duc9svg7w/image/upload/v1763377364/0954ac19-8461-4553-8d0a-0ec279eada25.png",
     "https://res.cloudinary.com/duc9svg7w/image/upload/v1763375956/15a07875-43f8-4026-b9ac-a9f2ce416412.png",
@@ -10,6 +11,7 @@ export default function ShopByGender() {
     "https://res.cloudinary.com/duc9svg7w/image/upload/v1763376933/abde0159-3ccb-47c4-b123-d926a50b481d.png",
   ];
 
+  // Mobile Images (from Vastramay — your provided links)
   const mobileImages = [
     "https://vastramay.com/cdn/shop/files/home_sbg_1311_men_mob_230x.progressive.jpg?v=1763045003",
     "https://vastramay.com/cdn/shop/files/home_sbc_2_mob_230x.progressive.jpg?v=1763018424",
@@ -17,45 +19,30 @@ export default function ShopByGender() {
     "https://vastramay.com/cdn/shop/files/home_sbc_4_mob_230x.progressive.jpg?v=1763018528",
   ];
 
-  // tweak these values per-image to control how each image is cropped
-  const desktopPositions = [
-    "center center",
-    "center center",
-    "center center",
-    "center center",
-  ];
-
-  // mobile positions tuned to keep subjects visible on narrow crops
-  const mobilePositions = [
-    "center top",    // men - keep head/top visible
-    "center center", // second - center is fine
-    "center center", // third - center is fine
-    "center top",    // fourth - keep top visible
-  ];
-
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const checkScreen = () => setIsMobile(window.innerWidth < 640);
-    checkScreen();
-    window.addEventListener("resize", checkScreen);
-    return () => window.removeEventListener("resize", checkScreen);
+    const check = () => setIsMobile(window.innerWidth <= 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
   }, []);
-
-  const images = isMobile ? mobileImages : desktopImages;
-  const positions = isMobile ? mobilePositions : desktopPositions;
 
   const gridWrapperStyle = {
     height: `calc(100vh - ${HEADER_HEIGHT_PX}px)`,
   };
 
+  const imagesToUse = isMobile ? mobileImages : desktopImages;
+
   return (
-    <section className="hidden md:block w-full min-h-screen overflow-hidden">
+    <section className="w-full min-h-screen overflow-hidden">
+
+      {/* Header */}
       <div
         className="w-full flex flex-col items-center justify-center bg-white"
         style={{ height: HEADER_HEIGHT_PX }}
       >
-        <h2 className="text-5xl md:text-6xl font-serif text-gray-800 mb-3 tracking-wide" style={{ fontFamily: 'serif' }}>
+        <h2 className="text-5xl md:text-6xl font-serif text-gray-800 mb-3 tracking-wide">
           Shop by Gender
         </h2>
         <p className="text-base md:text-lg text-gray-600 font-light italic">
@@ -63,25 +50,21 @@ export default function ShopByGender() {
         </p>
       </div>
 
+      {/* 2×2 Grid for both Desktop & Mobile */}
       <div
-        className="grid grid-cols-1 sm:grid-cols-2 grid-rows-2 gap-0 w-full"
+        className="grid grid-cols-2 grid-rows-2 gap-0 w-full h-full"
         style={gridWrapperStyle}
       >
-        {images.map((image, idx) => (
+        {imagesToUse.map((image, idx) => (
           <div key={idx} className="w-full h-full overflow-hidden">
             <img
               src={image}
-              srcSet={`${mobileImages[idx]} 480w, ${desktopImages[idx]} 960w`}
-              sizes="(max-width: 640px) 100vw, 50vw"
               alt={`tile-${idx}`}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                objectPosition: positions[idx] || "center center",
-                display: "block",
-              }}
+              className="w-full h-full object-cover block"
               draggable={false}
+              style={{
+                objectPosition: "center center", // same crop behavior like Vastramay
+              }}
             />
           </div>
         ))}
