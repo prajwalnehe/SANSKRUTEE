@@ -24,6 +24,8 @@ export const CartProvider = ({ children }) => {
         image: p.images?.image1,
         material: p.product_info?.SareeMaterial,
         work: p.product_info?.IncludedComponents,
+        brand: p.product_info?.brand,
+        color: p.product_info?.KurtiColor || p.product_info?.SareeColor,
         price,
         originalPrice: p.mrp,
         quantity: i.quantity || 1,

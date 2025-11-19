@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { FaShoppingCart, FaRupeeSign, FaArrowLeft, FaStar, FaRegStar, FaBolt, FaSpinner, FaTimes, FaExpand, FaHeart, FaRegHeart, FaShareAlt } from "react-icons/fa";
+import { FaShoppingCart, FaRupeeSign, FaArrowLeft, FaStar, FaRegStar, FaBolt, FaSpinner, FaTimes, FaExpand, FaHeart, FaRegHeart, FaShareAlt, FaComment } from "react-icons/fa";
 import { useCart } from "../context/CartContext";
 import { fetchSareeById } from "../services/api";
 
@@ -31,6 +31,7 @@ const ProductDetail = () => {
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const location = useLocation();
   const [wishlisted, setWishlisted] = useState(false);
+  const [selectedSize, setSelectedSize] = useState('M');
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -135,6 +136,45 @@ const ProductDetail = () => {
   }
 
   const sellingPrice = Math.round(saree.mrp - (saree.mrp * (saree.discountPercent || 0) / 100));
+  
+  // Get all available images
+  const productImages = [
+    saree.images?.image1,
+    saree.images?.image2,
+    saree.images?.image3,
+    saree.images?.image4,
+    saree.images?.image5
+  ].filter(Boolean);
+
+  // Default sizes (you can customize based on your data)
+  const sizes = ['S', 'M', 'L', 'XL', '2XL', '3XL'];
+
+  const handleWishlistToggle = () => {
+    if (!saree) return;
+    const pid = saree._id || id;
+    const list = readWishlist();
+    const exists = list.some(p => (p._id || p.id) === pid);
+    if (exists) {
+      const next = list.filter(p => (p._id || p.id) !== pid);
+      writeWishlist(next);
+      setWishlisted(false);
+      try { window.dispatchEvent(new Event('wishlist:updated')); } catch {}
+    } else {
+      const item = {
+        _id: pid,
+        title: saree.title,
+        images: saree.images,
+        price: sellingPrice,
+        mrp: saree.mrp,
+        discountPercent: saree.discountPercent || 0,
+      };
+      const next = [item, ...list.filter((p) => (p._id || p.id) !== pid)];
+      writeWishlist(next);
+      setWishlisted(true);
+      try { window.dispatchEvent(new Event('wishlist:updated')); } catch {}
+      alert(`${saree.title} added to wishlist`);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20 sm:pb-4 relative">
@@ -155,7 +195,7 @@ const ProductDetail = () => {
               <FaTimes className="w-8 h-8" />
             </button>
             <img
-              src={saree.images?.image1 || 'https://via.placeholder.com/600x800?text=Image+Not+Available'}
+              src={productImages[0] || 'https://via.placeholder.com/600x800?text=Image+Not+Available'}
               alt={saree.title}
               className="max-w-full max-h-[80vh] object-contain"
               onClick={(e) => e.stopPropagation()}
@@ -168,14 +208,16 @@ const ProductDetail = () => {
         </div>
       )}
 
-      <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 p-4">
-          
-          {/* Image Section */}
-          <div className="w-full overflow-hidden rounded-xl bg-gray-50 group relative">
-            <div className="relative pt-[100%] md:pt-[90%] overflow-hidden">
-              <img
-                src={saree.images?.image1 || 'https://via.placeholder.com/600x800?text=Image+Not+Available'}
+      <div className="max-w-7xl mx-auto py-6">
+        {/* Main Product Section */}
+        <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 p-6 lg:items-start">
+            
+            {/* Image Section - Single Image */}
+            <div className="relative group">
+              <div className="relative pt-[100%] bg-gray-50 rounded-lg overflow-hidden">
+                <img
+                  src={productImages[0] || 'https://via.placeholder.com/600x800?text=Image+Not+Available'}
                 alt={saree.title}
                 className="absolute top-0 left-0 w-full h-full object-contain cursor-zoom-in"
                 onClick={() => setIsImageModalOpen(true)}
@@ -184,61 +226,13 @@ const ProductDetail = () => {
                   e.target.src = 'https://via.placeholder.com/600x800?text=Image+Not+Available';
                 }}
               />
-              <div className="absolute top-3 right-3 z-10 flex gap-2">
-                <button
-                  type="button"
-                  aria-label="Add to wishlist"
-                  className={(wishlisted
-                    ? 'bg-rose-600 text-white hover:bg-rose-700 border border-rose-600'
-                    : 'bg-white text-black hover:bg-gray-50 border border-black') + ' rounded-full p-2 shadow cursor-pointer'}
+                <div 
+                  className="absolute bottom-4 right-4 bg-white bg-opacity-80 p-2 rounded-full cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
                   onClick={(e) => {
                     e.stopPropagation();
-                    if (!saree) return;
-                    const pid = saree._id || id;
-                    const list = readWishlist();
-                    const exists = list.some(p => (p._id || p.id) === pid);
-                    if (exists) {
-                      const next = list.filter(p => (p._id || p.id) !== pid);
-                      writeWishlist(next);
-                      setWishlisted(false);
-                      try { window.dispatchEvent(new Event('wishlist:updated')); } catch {}
-                    } else {
-                      const item = {
-                        _id: pid,
-                        title: saree.title,
-                        images: saree.images,
-                        price: Math.round(saree.mrp - (saree.mrp * (saree.discountPercent || 0) / 100)),
-                        mrp: saree.mrp,
-                        discountPercent: saree.discountPercent || 0,
-                      };
-                      const next = [item, ...list.filter((p) => (p._id || p.id) !== pid)];
-                      writeWishlist(next);
-                      setWishlisted(true);
-                      try { window.dispatchEvent(new Event('wishlist:updated')); } catch {}
-                      alert(`${saree.title} added to wishlist`);
-                    }
+                    setIsImageModalOpen(true);
                   }}
-                  title={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
-                >
-                  {wishlisted ? <FaHeart className="fill-current" /> : <FaRegHeart />}
-                </button>
-                <button
-                  type="button"
-                  aria-label="Share"
-                  className="bg-white/90 hover:bg-white text-gray-700 hover:text-gray-900 rounded-full p-2 shadow cursor-pointer"
-                  onClick={(e) => { e.stopPropagation(); handleShare(); }}
-                  title="Share"
-                >
-                  <FaShareAlt />
-                </button>
-              </div>
-              <div 
-                className="absolute bottom-4 right-4 bg-white bg-opacity-80 p-2 rounded-full cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsImageModalOpen(true);
-                }}
-                title="Click to enlarge"
+                  title="Click to enlarge"
               >
                 <FaExpand className="text-gray-700" />
               </div>
@@ -246,138 +240,179 @@ const ProductDetail = () => {
           </div>
 
           {/* Product Details */}
-          <div className="py-2 px-2">
-            <h1 className="text-2xl font-bold text-gray-800 mb-2">{saree.title}</h1>
-            
-            <div className="flex items-center mb-4">
-              <div className="flex text-yellow-400 mr-2">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  star <= 4 ? <FaStar key={star} /> : <FaRegStar key={star} />
-                ))}
-              </div>
-              <span className="text-gray-500 text-sm">(24 Reviews)</span>
-            </div>
-
-            <div className="flex items-center mb-4">
-              <div className="flex items-center">
-                <FaRupeeSign className="text-gray-700" />
-                <span className="text-2xl font-bold text-gray-900 ml-1">
+            <div className="py-2 flex flex-col h-full">
+              <div className="flex-1">
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">{saree.title}</h1>
+                
+                {/* Price */}
+                <div className="flex items-baseline gap-2 sm:gap-3 mb-6 flex-wrap">
+                  <div className="flex items-baseline">
+                    <FaRupeeSign className="text-gray-700 text-lg sm:text-xl" />
+                    <span className="text-2xl sm:text-3xl font-bold text-gray-900">
                   {sellingPrice.toLocaleString()}
                 </span>
               </div>
-              <span className="text-gray-400 text-base line-through ml-4">
+                  <span className="text-base sm:text-lg text-gray-400 line-through">
                 ₹{saree.mrp.toLocaleString()}
               </span>
               {saree.discountPercent > 0 && (
-                <span className="bg-pink-100 text-pink-700 text-sm font-medium px-2.5 py-0.5 rounded ml-4">
-                  {saree.discountPercent}% OFF
+                    <span className="bg-pink-100 text-pink-700 text-xs sm:text-sm font-medium px-2 sm:px-2.5 py-1 rounded">
+                      {saree.discountPercent}% off
                 </span>
               )}
             </div>
 
+                {/* Sales and Reviews */}
+                <div className="flex items-center gap-2 sm:gap-4 mb-5">
+                  <span className="text-xs sm:text-sm text-gray-600 whitespace-nowrap">10K+ Sold</span>
+                  <div className="flex items-center gap-1 sm:gap-2">
+                    <div className="flex text-yellow-400">
+                {[1, 2, 3, 4, 5].map((star) => (
+                        star <= 4 ? <FaStar key={star} className="w-3 h-3 sm:w-4 sm:h-4" /> : <FaRegStar key={star} className="w-3 h-3 sm:w-4 sm:h-4" />
+                ))}
+              </div>
+                    <span className="text-xs sm:text-sm font-medium text-gray-700 whitespace-nowrap">4.8</span>
+                    <span className="text-xs sm:text-sm text-gray-500 whitespace-nowrap">(188 Reviews)</span>
+                  </div>
+            </div>
+
+                {/* Description */}
+                {saree.description && (
             <div className="mb-6">
-              <h3 className="text-base font-semibold text-gray-800 mb-2">Description</h3>
-              <p className="text-gray-600 leading-relaxed mb-6">
+                    <p className="text-xs sm:text-sm text-gray-700 leading-relaxed">
                 {saree.description}
               </p>
+                  </div>
+                )}
 
-              {/* Quantity Selector and Action Buttons */}
-              <div className="flex items-center mb-6">
-                <span className="text-gray-700 font-medium mr-4">Quantity:</span>
-                <div className="flex items-center border border-gray-300 rounded-md overflow-hidden">
-                  <button 
-                    onClick={decrementQuantity}
-                    className="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer"
-                    disabled={quantity <= 1}
-                  >
-                    -
-                  </button>
-                  <span className="px-4 py-1 border-x border-gray-300">{quantity}</span>
-                  <button 
-                    onClick={incrementQuantity}
-                    className="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 cursor-pointer"
-                  >
-                    +
-                  </button>
+                {/* Size Selection */}
+                <div className="mb-6">
+                  <div className="mb-4">
+                    <h3 className="text-sm sm:text-base font-semibold text-gray-900">Select Size</h3>
+                  </div>
+                  <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
+                    {sizes.map((size) => (
+                      <button
+                        key={size}
+                        className={`min-w-[45px] sm:min-w-[50px] px-4 sm:px-5 py-2 sm:py-2.5 border-2 rounded-lg text-xs sm:text-sm font-semibold transition-all ${
+                          selectedSize === size
+                            ? 'border-black bg-black text-white shadow-sm'
+                            : 'border-gray-300 hover:border-gray-500 bg-white text-gray-700 hover:bg-gray-50'
+                        }`}
+                        onClick={() => setSelectedSize(size)}
+                      >
+                        {size}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
 
-              {/* Sticky Buttons Container - Hidden on larger screens */}
-              <div className="fixed bottom-0 left-0 right-0 bg-white shadow-lg p-2 z-50 sm:hidden">
-                <div className="flex gap-2 max-w-md mx-auto">
+              {/* Action Buttons - Pushed to bottom */}
+              <div className="mt-auto pt-6 hidden sm:block">
+                <div className="flex flex-col items-center gap-3 mb-5">
                   <button 
-                    className="flex-1 bg-white text-[#3E5F7A] py-2.5 rounded-lg flex items-center justify-center space-x-1.5 hover:bg-[#2D4860] hover:text-white transition-colors disabled:opacity-70 cursor-pointer shadow-sm border border-[#3E5F7A] text-sm"
+                    className="w-full max-w-md bg-black text-white py-3 sm:py-3.5 px-6 sm:px-8 rounded-lg text-sm sm:text-base font-medium hover:bg-gray-800 transition-colors disabled:opacity-70"
+                    onClick={handleBuyNow}
+                    disabled={isAdding}
+                  >
+                    Buy Now
+                  </button>
+                  <button 
+                    className="w-full max-w-md bg-white text-black border-2 border-black py-3 sm:py-3.5 px-6 sm:px-8 rounded-lg text-sm sm:text-base font-medium hover:bg-gray-50 transition-colors disabled:opacity-70"
                     onClick={handleAddToCart}
                     disabled={isAdding}
                   >
-                    <FaShoppingCart className="h-4 w-4" />
-                    <span className="font-medium">{isAdding ? 'Adding...' : 'Add to Cart'}</span>
+                    {isAdding ? 'Adding...' : 'Add to Cart'}
+                  </button>
+              </div>
+
+                {/* Action Icons */}
+                <div className="flex items-center justify-center gap-4 sm:gap-6 text-gray-600 pt-2 border-t border-gray-200">
+                  <button 
+                    className="flex items-center gap-1.5 sm:gap-2 hover:text-gray-900 transition-colors"
+                    title="Chat"
+                  >
+                    <FaComment className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
+                    <span className="text-xs sm:text-sm">Chat</span>
                   </button>
                   <button 
-                    className="flex-1 bg-[#3E5F7A] text-white py-2.5 rounded-lg flex items-center justify-center space-x-1.5 hover:bg-[#2D4860] transition-colors cursor-pointer shadow-sm border border-[#3E5F7A] text-sm"
-                    onClick={handleBuyNow}
+                    className="flex items-center gap-1.5 sm:gap-2 hover:text-gray-900 transition-colors"
+                    onClick={handleWishlistToggle}
+                    title={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
                   >
-                    <FaBolt className="h-4 w-4" />
-                    <span className="font-medium">Buy Now</span>
+                    {wishlisted ? <FaHeart className="fill-current text-red-500 w-4 h-4 sm:w-[18px] sm:h-[18px]" /> : <FaRegHeart className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />}
+                    <span className="text-xs sm:text-sm">Wishlist</span>
+                  </button>
+                  <button 
+                    className="flex items-center gap-1.5 sm:gap-2 hover:text-gray-900 transition-colors"
+                    onClick={handleShare}
+                    title="Share"
+                  >
+                    <FaShareAlt className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
+                    <span className="text-xs sm:text-sm">Share</span>
                   </button>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
 
-              {/* Regular Buttons - Hidden on mobile */}
-              <div className="hidden sm:flex flex-col sm:flex-row gap-3 mb-6">
-                <button 
-                  className="flex-1 bg-white text-[#3E5F7A] py-2.5 px-5 rounded-lg flex items-center justify-center space-x-2 hover:bg-[#2D4860] hover:text-white transition-colors disabled:opacity-70 cursor-pointer shadow-sm border border-[#3E5F7A]"
-                  onClick={handleAddToCart}
-                  disabled={isAdding}
-                >
-                  <FaShoppingCart className="h-5 w-5" />
-                  <span className="font-medium">{isAdding ? 'Adding...' : 'Add to Cart'}</span>
-                </button>
-                <button 
-                  className="flex-1 bg-[#3E5F7A] text-white py-2.5 px-5 rounded-lg flex items-center justify-center space-x-2 hover:bg-[#2D4860] transition-colors cursor-pointer shadow-sm border border-[#3E5F7A]"
-                  onClick={handleBuyNow}
-                >
-                  <FaBolt className="h-5 w-5" />
-                  <span className="font-medium">Buy Now</span>
-                </button>
+        {/* Product Description */}
+        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+          <div className="p-4 sm:p-6">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4">Description</h2>
+            <p className="text-sm sm:text-base text-gray-700 leading-relaxed mb-6">
+              {saree.description}
+            </p>
+            
+            {/* Specifications */}
+            <div className="space-y-2 sm:space-y-3 text-xs sm:text-sm text-gray-700">
+              <div className="flex">
+                <span className="w-32 sm:w-48 font-medium text-gray-600">Package Dimensions:</span>
+                <span>27.3 x 24.8 x 4.9 cm; 180 g</span>
               </div>
-              
-              <div className="space-y-4">
-                <h4 className="text-lg font-semibold text-gray-800 border-b pb-2">Product Information</h4>
-                <div className="space-y-3 text-gray-700">
+              <div className="flex">
+                <span className="w-32 sm:w-48 font-medium text-gray-600">Specification:</span>
+                <span>{saree.product_info?.KurtiMaterial || saree.product_info?.SareeMaterial || 'N/A'}</span>
+              </div>
+              <div className="flex">
+                <span className="w-32 sm:w-48 font-medium text-gray-600">Date First Available:</span>
+                <span>{new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+              </div>
+              <div className="flex">
+                <span className="w-32 sm:w-48 font-medium text-gray-600">Department:</span>
+                <span>{saree.category || 'Mens'}</span>
+              </div>
                   <div className="flex">
-                    <span className="w-36 font-medium text-gray-600">Brand:</span>
+                <span className="w-32 sm:w-48 font-medium text-gray-600">Brand:</span>
                     <span>{saree.product_info?.brand || 'N/A'}</span>
                   </div>
                   <div className="flex">
-                    <span className="w-36 font-medium text-gray-600">Manufacturer:</span>
+                <span className="w-32 sm:w-48 font-medium text-gray-600">Manufacturer:</span>
                     <span>{saree.product_info?.manufacturer || 'N/A'}</span>
                   </div>
                   <div className="flex">
-                    <span className="w-36 font-medium text-gray-600">Category:</span>
-                    <span>{saree.category}</span>
-                  </div>
-                  <div className="flex">
-                    <span className="w-36 font-medium text-gray-600">Material:</span>
+                <span className="w-32 sm:w-48 font-medium text-gray-600">Material:</span>
                     <span>{saree.product_info?.KurtiMaterial || saree.product_info?.SareeMaterial || 'N/A'}</span>
                   </div>
                   <div className="flex">
-                    <span className="w-36 font-medium text-gray-600">Color:</span>
+                <span className="w-32 sm:w-48 font-medium text-gray-600">Color:</span>
                     <span>{saree.product_info?.KurtiColor || saree.product_info?.SareeColor || 'N/A'}</span>
                   </div>
                   <div className="flex">
-                    <span className="w-36 font-medium text-gray-600">Length:</span>
+                <span className="w-32 sm:w-48 font-medium text-gray-600">Length:</span>
                     <span>{saree.product_info?.KurtiLength || saree.product_info?.SareeLength || 'N/A'}</span>
                   </div>
                   {saree.product_info?.SleeveLength && (
                     <div className="flex">
-                      <span className="w-36 font-medium text-gray-600">Sleeve Length:</span>
+                  <span className="w-32 sm:w-48 font-medium text-gray-600">Sleeve Length:</span>
                       <span>{saree.product_info.SleeveLength}</span>
                     </div>
                   )}
                   {saree.product_info?.IncludedComponents && (
                     <div className="flex">
-                      <span className="w-36 font-medium text-gray-600">Included:</span>
+                  <span className="w-32 sm:w-48 font-medium text-gray-600">Included:</span>
                       <span>{saree.product_info.IncludedComponents}</span>
                     </div>
                   )}
@@ -385,17 +420,22 @@ const ProductDetail = () => {
               </div>
             </div>
 
-
-            <div className="mt-8 pt-6 border-t border-gray-200">
-              <div className="flex items-center">
-                <div className="bg-green-100 p-2 rounded-full mr-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <span className="text-gray-700">Free shipping on orders over ₹1,000</span>
-              </div>
-            </div>
+        {/* Sticky Buttons for Mobile */}
+        <div className="fixed bottom-0 left-0 right-0 bg-white shadow-lg p-3 z-50 sm:hidden">
+          <div className="flex gap-2 max-w-md mx-auto">
+            <button 
+              className="flex-1 bg-white text-black border-2 border-black py-2.5 rounded-lg font-medium hover:bg-gray-50 transition-colors disabled:opacity-70 text-sm"
+              onClick={handleAddToCart}
+              disabled={isAdding}
+            >
+              {isAdding ? 'Adding...' : 'Add to Cart'}
+            </button>
+            <button 
+              className="flex-1 bg-black text-white py-2.5 rounded-lg font-medium hover:bg-gray-800 transition-colors text-sm"
+              onClick={handleBuyNow}
+            >
+              Buy Now
+            </button>
           </div>
         </div>
       </div>
