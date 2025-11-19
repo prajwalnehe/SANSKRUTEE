@@ -61,7 +61,7 @@ function Cart() {
           <p className="text-gray-500 mb-6">Looks like you haven't added anything to your cart yet.</p>
           <button 
             onClick={() => navigate('/collections')}
-            className="bg-[#3E5F7A] text-white px-6 py-2 rounded-md hover:bg-[#2D4860] transition-colors cursor-pointer"
+            className="bg-black text-white px-6 py-2 rounded-md hover:bg-gray-800 transition-colors cursor-pointer"
           >
             Continue Shopping
           </button>

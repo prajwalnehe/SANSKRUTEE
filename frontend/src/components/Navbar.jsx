@@ -240,7 +240,7 @@ const Navbar = () => {
                 key={link.name}
                 to={link.path}
                 onClick={scrollToTop}
-                className="text-gray-700 hover:text-[#2D4860] font-medium transition-colors duration-200 text-sm whitespace-nowrap"
+                className="text-gray-700 hover:text-gray-800 font-medium transition-colors duration-200 text-sm whitespace-nowrap"
               >
                 {link.name}
               </Link>
@@ -258,11 +258,11 @@ const Navbar = () => {
                 onChange={(e) => { const v = e.target.value; setSearchQuery(v); setSearchOpen(v.trim().length >= 2); }}
                 onKeyPress={handleSearchKeyPress}
                 onFocus={() => { if (searchQuery.trim().length >= 2) setSearchOpen(true); }}
-                className="w-full px-3 py-1.5 pl-8 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#2D4860] focus:border-transparent transition-all duration-200"
+                className="w-full px-3 py-1.5 pl-8 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all duration-200"
               />
               <button
                 onClick={handleSearch}
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-[#2D4860] transition-colors"
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-800 transition-colors"
                 type="button"
               >
                 <svg
@@ -283,22 +283,22 @@ const Navbar = () => {
 
             {/* Desktop Navigation Icons */}
             <div className="hidden md:flex items-center space-x-1 mr-4 sm:mr-5 md:mr-6 lg:mr-8">
-              <Link to="/wishlist" className="p-2 text-gray-700 hover:text-[#3E5F7A] relative">
+              <Link to="/wishlist" className="p-2 text-gray-700 hover:text-black relative">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>
                 {wishlistCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-[#3E5F7A] text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 bg-black text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                     {wishlistCount > 9 ? '9+' : wishlistCount}
                   </span>
                 )}
               </Link>
-              <Link to="/cart" className="p-2 text-gray-700 hover:text-[#3E5F7A] relative">
+              <Link to="/cart" className="p-2 text-gray-700 hover:text-black relative">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
                 {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-[#3E5F7A] text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 bg-black text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                     {cartCount > 9 ? '9+' : cartCount}
                   </span>
                 )}
@@ -310,7 +310,7 @@ const Navbar = () => {
               <div className="flex items-center space-x-2">
                 <Link
                   to="/profile"
-                  className="p-2 text-gray-700 hover:text-[#2D4860] transition-colors duration-200"
+                  className="p-2 text-gray-700 hover:text-gray-800 transition-colors duration-200"
                   title="Profile"
                 >
                   <svg
@@ -332,7 +332,7 @@ const Navbar = () => {
               <>
                 <button
                   onClick={handleLogin}
-                  className="p-2 text-gray-700 hover:text-[#2D4860] transition-colors duration-200 md:inline-flex lg:hidden"
+                  className="p-2 text-gray-700 hover:text-gray-800 transition-colors duration-200 md:inline-flex lg:hidden"
                   title="Sign In"
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -341,7 +341,7 @@ const Navbar = () => {
                 </button>
                 <button
                   onClick={handleLogin}
-                  className="hidden lg:inline-flex px-4 py-2 bg-[#3E5F7A] text-white rounded-lg font-medium hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#2D4860]"
+                  className="hidden lg:inline-flex px-4 py-2 bg-black text-white rounded-lg font-medium hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:bg-gray-800"
                 >
                   Login
                 </button>
@@ -353,7 +353,7 @@ const Navbar = () => {
           <div className="flex items-center md:hidden mr-4">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-[#3E5F7A] focus:outline-none"
+              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-black focus:outline-none"
               aria-expanded="false"
             >
               <span className="sr-only">Open main menu</span>
@@ -380,7 +380,7 @@ const Navbar = () => {
                   key={link.name}
                   to={link.path}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center justify-center text-gray-700 hover:text-[#2D4860] hover:bg-rose-50 font-medium py-3 px-4 rounded-lg transition-all duration-200 text-sm sm:text-base border border-gray-200"
+                  className="flex items-center justify-center text-gray-700 hover:text-gray-800 hover:bg-rose-50 font-medium py-3 px-4 rounded-lg transition-all duration-200 text-sm sm:text-base border border-gray-200"
                 >
                   {link.name}
                 </Link>
@@ -395,7 +395,7 @@ const Navbar = () => {
                     handleLogout();
                     setIsMobileMenuOpen(false);
                   }}
-                  className="w-full flex items-center justify-center space-x-2 py-3 px-4 bg-[#3E5F7A] text-white rounded-lg font-medium hover:bg-[#2D4860] transition-colors duration-200"
+                  className="w-full flex items-center justify-center space-x-2 py-3 px-4 bg-black text-white rounded-lg font-medium hover:bg-gray-800 transition-colors duration-200"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -410,7 +410,7 @@ const Navbar = () => {
                     handleLogin();
                     setIsMobileMenuOpen(false);
                   }}
-                  className="w-full flex items-center justify-center space-x-2 py-3 px-4 bg-[#3E5F7A] text-white rounded-lg font-medium hover:bg-[#2D4860] transition-colors duration-200"
+                  className="w-full flex items-center justify-center space-x-2 py-3 px-4 bg-black text-white rounded-lg font-medium hover:bg-gray-800 transition-colors duration-200"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />

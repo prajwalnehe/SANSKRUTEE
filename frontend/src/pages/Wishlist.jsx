@@ -38,7 +38,7 @@ const Wishlist = () => {
         <h2 className="text-xl font-semibold text-gray-800 mb-2">Your Wishlist is Empty</h2>
         <p className="text-gray-600 mb-4">Tap the heart on any product to save it here.</p>
         <button
-          className="px-4 py-2 bg-[#3E5F7A] text-white rounded-lg shadow hover:bg-[#2D4860]"
+          className="px-4 py-2 bg-black text-white rounded-lg shadow hover:bg-gray-800"
           onClick={() => navigate('/collections')}
         >
           Browse Products
@@ -80,7 +80,7 @@ const Wishlist = () => {
               </div>
               <div className="mt-3 flex justify-between items-center">
                 <button
-                  className="text-sm text-[#3E5F7A] hover:underline"
+                  className="text-sm text-black hover:underline"
                   onClick={() => navigate(`/product/${p._id}`)}
                 >
                   View Details
