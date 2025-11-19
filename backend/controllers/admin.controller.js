@@ -102,19 +102,23 @@ export async function adminListOrders(req, res) {
       .populate('user', 'name email')
       .lean();
 
-    const userIds = Array.from(new Set(orders.map(o => String(o.user?._id)).filter(Boolean)));
-    let addrMap = {};
-    if (userIds.length > 0) {
-      const addrs = await Address.find({ userId: { $in: userIds } }).lean();
-      addrMap = Object.fromEntries(addrs.map(a => [String(a.userId), a]));
+    // Best-effort address enrichment; never fail the whole response for this step
+    try {
+      const userIds = Array.from(new Set(orders.map(o => String(o.user?._id)).filter(Boolean)));
+      let addrMap = {};
+      if (userIds.length > 0) {
+        const addrs = await Address.find({ userId: { $in: userIds } }).lean();
+        addrMap = Object.fromEntries(addrs.map(a => [String(a.userId), a]));
+      }
+      const enriched = orders.map(o => ({
+        ...o,
+        address: o.shippingAddress || (o.user?._id ? (addrMap[String(o.user._id)] || null) : null),
+      }));
+      return res.json(enriched);
+    } catch {
+      // Fallback: return orders without address enrichment
+      return res.json(orders);
     }
-
-    const enriched = orders.map(o => ({
-      ...o,
-      address: o.shippingAddress || (o.user?._id ? (addrMap[String(o.user._id)] || null) : null),
-    }));
-
-    return res.json(enriched);
   } catch (err) {
     return res.status(500).json({ message: 'Failed to list orders', error: err.message });
   }
