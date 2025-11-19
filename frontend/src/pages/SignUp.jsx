@@ -49,18 +49,18 @@ const SignUp = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-neutral-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 via-gray-100 to-gray-200">
       <div className="flex h-screen">
         {/* Left Side - Logo */}
-        <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-rose-100 via-pink-100 to-amber-100 items-center justify-center">
+        <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300 items-center justify-center">
           <div className="text-center">
             <Link to="/" className="inline-block mb-8">
-              <h1 className="text-6xl font-serif font-bold bg-gradient-to-r from-pink-500 via-rose-500 to-amber-500 bg-clip-text text-transparent">
-                SareeSansar
+              <h1 className="text-6xl font-serif font-bold text-black">
+                PARIDHAAN
               </h1>
             </Link>
             <p className="text-xl text-gray-600 max-w-md mx-auto leading-relaxed">
-              Join our community of saree lovers. Create your account and start your journey to timeless elegance.
+              Create your account and explore premium kurtas and kurtis with exclusive offers.
             </p>
           </div>
         </div>
@@ -71,8 +71,8 @@ const SignUp = () => {
             {/* Mobile Logo */}
             <div className="lg:hidden text-center mb-8">
               <Link to="/" className="inline-block mb-6">
-                <h1 className="text-3xl font-serif font-bold bg-gradient-to-r from-pink-500 via-rose-500 to-amber-500 bg-clip-text text-transparent">
-                  SareeSansar
+                <h1 className="text-3xl font-serif font-bold text-black">
+                  PARIDHAAN
                 </h1>
               </Link>
             </div>
@@ -83,7 +83,7 @@ const SignUp = () => {
                 Create Account
               </h2>
               <p className="text-gray-600">
-                Join us to discover beautiful sarees and exclusive offers
+                Join us to discover stylish kurtas and kurtis with exclusive offers
               </p>
             </div>
 

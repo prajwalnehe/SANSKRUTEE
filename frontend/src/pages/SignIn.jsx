@@ -43,18 +43,18 @@ const SignIn = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-neutral-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 via-gray-100 to-gray-200">
       <div className="flex h-screen">
         {/* Left Side - Logo */}
-        <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-rose-100 via-pink-100 to-amber-100 items-center justify-center">
+        <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300 items-center justify-center">
           <div className="text-center">
             <Link to="/" className="inline-block mb-8">
-              <h1 className="text-5xl font-serif font-bold bg-gradient-to-r from-pink-500 via-rose-500 to-amber-500 bg-clip-text text-transparent">
-                SareeSansar
+              <h1 className="text-5xl font-serif font-bold text-black">
+                PARIDHAAN
               </h1>
             </Link>
             <p className="text-lg text-gray-600 max-w-sm mx-auto leading-relaxed">
-              Discover the elegance of traditional Indian sarees. Your journey to timeless beauty starts here.
+              Discover premium kurtas and kurtis crafted for comfort and style.
             </p>
           </div>
         </div>
@@ -65,8 +65,8 @@ const SignIn = () => {
             {/* Mobile Logo */}
             <div className="lg:hidden text-center mb-6">
               <Link to="/" className="inline-block mb-6">
-                <h1 className="text-2xl font-serif font-bold bg-gradient-to-r from-pink-500 via-rose-500 to-amber-500 bg-clip-text text-transparent">
-                  SareeSansar
+                <h1 className="text-2xl font-serif font-bold text-black">
+                  PARIDHAAN
                 </h1>
               </Link>
             </div>
