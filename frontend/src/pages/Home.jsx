@@ -13,11 +13,11 @@ const Home = () => {
         slides={[
           {
             desktop: 'https://res.cloudinary.com/duc9svg7w/image/upload/v1763451403/Exclusive_Kurtas_Kurtis_Collection_Where_Tradition_Meets_Modern_Style_1080_x_400_px_2048_x_594_px_lepvuo.svg',
-            alt: 'SareeSansaar - Premium Saree Collection',
+            alt: 'PARIDHAAN - Premium Kurtas & Kurtis',
           },
           {
             desktop: 'https://res.cloudinary.com/duc9svg7w/image/upload/v1763451863/Elegance_Comfort_Style_2048_x_594_px_wqggd6.svg',
-            alt: 'Festive Offer - SareeSansaar',
+            alt: 'Festive Offers - PARIDHAAN',
           },
         ]}
         mobileSrc="https://res.cloudinary.com/duc9svg7w/image/upload/v1763383307/file_0000000032ac7209890b93ba8217ac10_1_nfz2u2.png"
@@ -36,17 +36,17 @@ const Home = () => {
 <section className="py-20 px-4 bg-white">
   <div className="max-w-7xl mx-auto">
     <h2 className="text-5xl font-light tracking-wide text-center mb-4 text-gray-800">
-      WHY CHOOSE SAREESANSAAR
+      WHY CHOOSE PARIDHAAN
     </h2>
     <p className="text-xl text-gray-600 text-center mb-16 font-light">
-      Discover our exclusive collection of handpicked sarees
+      Discover our exclusive collection of handpicked kurtas and kurtis
     </p>
     <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
       {[
-        { icon: '✨', title: 'Premium Quality', desc: 'Handpicked finest fabrics from master weavers' },
+        { icon: '✨', title: 'Premium Quality', desc: 'Finest fabrics and craftsmanship for all-day comfort' },
         { icon: '🚚', title: 'Free Shipping', desc: 'On orders above ₹999 across India' },
         { icon: '🔄', title: 'Easy Returns', desc: '7-day hassle-free return policy' },
-        { icon: '💎', title: '100% Authentic', desc: 'Certified genuine handloom products' },
+        { icon: '💎', title: '100% Authentic', desc: 'Original designs in kurtas and kurtis' },
       ].map((feature, index) => (
         <div
           key={index}
