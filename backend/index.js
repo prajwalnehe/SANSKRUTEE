@@ -16,34 +16,45 @@ import adminRoutes from './routes/admin.routes.js';
 import connectDB from './config/DataBaseConnection.js';
 import cookieJwtAuth from './middleware/authMiddleware.js';
 
-configDotenv();       
+configDotenv();
 
-console.log('Razorpay env loaded:', Boolean(process.env.RAZORPAY_KEY_ID), Boolean(process.env.RAZORPAY_KEY_SECRET));
+console.log(
+  'Razorpay env loaded:',
+  Boolean(process.env.RAZORPAY_KEY_ID),
+  Boolean(process.env.RAZORPAY_KEY_SECRET)
+);
 
 const server = express();
 
-const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
-// Needed when running behind a proxy (Render) to correctly set secure cookies
+// When behind proxy (Render)
 server.set('trust proxy', 1);
-server.use(cors({
-  origin: FRONTEND_URL,
-  credentials: true,
-}));
+
+// 🚀 **OPEN CORS FOR ALL ORIGINS**
+server.use(
+  cors({
+    origin: true,  // reflects request origin automatically
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  })
+);
 
 server.use(express.json());
 server.use(cookieParser());
 
-// Initialize Passport strategies
+// Initialize Passport
 setupPassport();
 server.use(passport.initialize());
 
+// Health check
 server.get('/api/health', (req, res) => res.json({ ok: true }));
-// Cookie-JWT protected current user info (Google/local unified)
+
+// Current user route (cookie + JWT)
 server.get('/api/me', cookieJwtAuth, (req, res) => {
-  const user = req.user;
-  res.json({ user });
+  res.json({ user: req.user });
 });
 
+// Routes
 server.use('/api/auth', authRoutes);
 server.use('/api/header', headerRoutes);
 server.use('/api/products', productRoutes);
@@ -53,10 +64,12 @@ server.use('/api/address', addressRoutes);
 server.use('/api/orders', ordersRoutes);
 server.use('/api/admin', adminRoutes);
 
-const PORT = process.env.PORT || 7000;
+const PORT = process.env.PORT || 5000;
 
+// Connect DB
 await connectDB(process.env.MONGODB_URI || '');
 
+// Start server
 server.listen(PORT, () => {
   console.log('Server is running at', PORT);
 });
