@@ -81,6 +81,95 @@ const Header = () => {
         
       ]
     },
+      { 
+        name: 'SILK', 
+        path: '/category/silk',
+        subcategories: [
+          { name: 'SOFT SILK SAREES', path: '/category/silk/soft-silk-sarees' },
+          { name: 'KANJIVARAM SILK SAREES', path: '/category/silk/kanjivaram-silk-sarees' },
+          { name: 'BANARASI SILK SAREES', path: '/category/silk/banarasi-silk-sarees' },
+          { name: 'MAHESHWARI SILK SAREES', path: '/category/silk/maheshwari-silk-sarees' },
+          { name: 'RAW SILK SAREES', path: '/category/silk/raw-silk-sarees' },
+          { name: 'MYSORE SILK SAREES', path: '/category/silk/mysore-silk-sarees' },
+          { name: 'SAMBALPURI SILK SAREES', path: '/category/silk/sambalpuri-silk-sarees' },
+          { name: 'KALAMKARI PRINT SILK SAREES', path: '/category/silk/kalamkari-print-silk-sarees' }
+  
+        ]
+      },
+      { 
+        name: 'COTTON', 
+        path: '/category/cotton',
+        subcategories: [
+    { name: 'BENGALI COTTON SAREES', path: '/category/cotton/bengali-cotton-sarees' },
+    { name: 'MAHESHWARI COTTON SAREES', path: '/category/cotton/maheshwari-cotton-sarees' },
+    { name: 'JAIPUR COTTON SAREES', path: '/category/cotton/jaipur-cotton-sarees' },
+    { name: 'SOUTH COTTON SAREES', path: '/category/cotton/south-cotton-sarees' },
+    { name: 'OFFICE WEAR COTTON SAREES', path: '/category/cotton/office-wear-cotton-sarees' },
+    { name: 'DR.KHADI COTTON SAREES', path: '/category/cotton/dr-khadi-cotton-sarees' },
+    { name: 'BLOCK PRINTED COTTON SAREES', path: '/category/cotton/block-printed-cotton-sarees' },
+    { name: 'BAGRU PRINT COTTON SAREES', path: '/category/cotton/bagru-print-cotton-sarees' },
+    { name: 'AJRAKH PRINT COTTON SAREES', path: '/category/cotton/ajrakh-print-cotton-sarees' },
+    { name: 'IKKAT COTTON SAREES', path: '/category/cotton/ikkat-cotton-sarees' },
+    { name: 'CHANDERI COTTON SILKS', path: '/category/cotton/chanderi-cotton-silks' },
+    { name: 'KALAMKARI COTTON SAREES', path: '/category/cotton/kalamkari-cotton-sarees' },]
+  
+      },
+      {
+        name: 'REGIONAL',
+        path: '/category/regional',
+        subcategories: [
+          { name: 'SAMBALPURI REGIONAL SAREES', path: '/category/regional/sambalpuri-regional-sarees' },
+          { name: 'KANJIVARAM REGIONAL SAREES', path: '/category/regional/kanjivaram-regional-sarees' },
+          { name: 'BENGALI REGIONAL SAREES', path: '/category/regional/bengali-regional-sarees' },
+          { name: 'MYSORE REGIONAL SAREES', path: '/category/regional/mysore-regional-sarees' },
+          { name: 'MAHESHWARI REGIONAL SAREES', path: '/category/regional/maheshwari-regional-sarees' },
+          { name: 'KARNATAKA REGIONAL SAREES', path: '/category/regional/karnataka-regional-sarees' },
+          { name: 'TAMILNADU REGIONAL SAREES', path: '/category/regional/tamilnadu-regional-sarees' },
+          { name: 'BANARASI REGIONAL SAREES', path: '/category/regional/banarasi-regional-sarees' },
+          { name: 'BANARASI REGIONAL DUPATTA', path: '/category/regional/banarasi-regional-dupatta' }
+        ]
+      },
+      { 
+        name: 'BANARASI', 
+        path: '/category/banarasi',
+        subcategories: [
+          { name: 'BANARASI SAREES', path: '/category/banarasi/banarasi-sarees' },
+          { name: 'BANARASI DUPATTA', path: '/category/banarasi/banarasi-dupatta' },
+          { name: 'BANARASI DRESS MATERIAL', path: '/category/banarasi/banarasi-dress-material' }
+        ]
+      },
+      { 
+        name: 'DESIGNER SAREES', 
+        path: '/category/designer-sarees',
+        subcategories: [
+          { name: 'PARTY WEAR SAREE', path: '/category/designer-sarees/party-wear-saree' },
+          { name: 'WEDDING SAREES', path: '/category/designer-sarees/wedding-sarees' },
+          { name: 'FESTIVE SAREES', path: '/category/designer-sarees/festive-sarees' },
+          { name: 'BOLLYWOOD STYLE SAREES', path: '/category/designer-sarees/bollywood-style-sarees' },
+          { name: 'HEAVY EMBROIDERED SAREES', path: '/category/designer-sarees/heavy-embroidered-sarees' }
+        ]
+      },
+      { 
+        name: 'PRINTED SAREES', 
+        path: '/category/printed-sarees',
+        subcategories: [
+          { name: 'FLORAL PRINTED SAREES', path: '/category/printed-sarees/floral-printed-sarees' },
+          { name: 'DIGITAL PRINTED SAREES', path: '/category/printed-sarees/digital-printed-sarees' },
+          { name: 'BLOCK PRINTED SAREES', path: '/category/printed-sarees/block-printed-sarees' },
+          { name: 'ABSTRACT PRINTED SAREES', path: '/category/printed-sarees/abstract-printed-sarees' },
+          { name: 'GEOMETRIC PRINTED SAREES', path: '/category/printed-sarees/geometric-printed-sarees' }
+        ]
+      },
+      { 
+        name: 'JEWELLERY', 
+        path: '/category/jewellery',
+        subcategories: [
+          { name: 'NECKLACE', path: '/category/jewellery/necklace' },
+          { name: 'EARRINGS', path: '/category/jewellery/earrings' },
+          { name: 'BRACELETS', path: '/category/jewellery/bracelets' },
+          { name: 'BANGLES', path: '/category/jewellery/bangles' }
+        ]
+      }
   ];
 
   // Close dropdown when clicking outside
