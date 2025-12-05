@@ -197,69 +197,67 @@ const Header = () => {
 
   return (
     <header className="sticky top-16 md:top-20 z-40 bg-white border-t border-gray-200 shadow-sm">
-      <div className="relative w-full">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center overflow-x-auto py-3 hide-scrollbar scroll-smooth w-full" ref={headerRef}>
-          <div className="flex items-center space-x-8 min-w-max px-4 sm:px-6 lg:px-8">
-            {categories.map((category) => (
-              <div key={category.name} className="relative group shrink-0">
-                <div 
-                  className={`flex items-center text-gray-700 hover:text-rose-500 font-medium text-sm whitespace-nowrap transition-colors duration-200 relative cursor-pointer ${
-                    activeCategory === category.name ? 'text-rose-500' : ''
+        <div className="hidden md:flex items-center justify-center space-x-8 py-3" ref={headerRef}>
+          {categories.map((category) => (
+            <div key={category.name} className="relative group">
+              <div 
+                className={`flex items-center text-gray-700 hover:text-rose-500 font-medium text-sm whitespace-nowrap transition-colors duration-200 relative cursor-pointer ${
+                  activeCategory === category.name ? 'text-rose-500' : ''
+                }`}
+                onClick={() => handleClick(category.name)}
+              >
+                {category.name}
+                <svg
+                  className={`w-4 h-4 ml-1 transition-transform duration-200 ${
+                    activeCategory === category.name ? 'rotate-180' : ''
                   }`}
-                  onClick={() => handleClick(category.name)}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  {category.name}
-                  <svg
-                    className={`w-4 h-4 ml-1 transition-transform duration-200 ${
-                      activeCategory === category.name ? 'rotate-180' : ''
-                    }`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-pink-400 to-amber-400 group-hover:w-full transition-all duration-300"></span>
-                </div>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-pink-400 to-amber-400 group-hover:w-full transition-all duration-300"></span>
+              </div>
 
-                {/* Dropdown */}
-                {category.subcategories && activeCategory === category.name && (
-                  <div className="absolute left-1/2 transform -translate-x-1/2 mt-1 z-50">
-                    <div className="bg-white rounded-lg shadow-xl border border-gray-100 overflow-hidden w-56">
-                      <Link
-                        to={category.path}
-                        className="block px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-rose-500 border-b border-gray-100"
-                        onClick={() => setActiveCategory(null)}
-                      >
-                        All {category.name}
-                      </Link>
-                      <div className="max-h-[60vh] overflow-y-auto custom-scrollbar">
-                        {category.subcategories.map((subcategory) => (
-                          <Link
-                            key={subcategory.name}
-                            to={subcategory.path}
-                            className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-rose-50 hover:text-rose-500 transition-colors duration-150"
-                            onClick={() => setActiveCategory(null)}
-                          >
-                            {subcategory.name}
-                          </Link>
-                        ))}
-                      </div>
+              {/* Dropdown */}
+              {category.subcategories && activeCategory === category.name && (
+                <div className="absolute left-1/2 transform -translate-x-1/2 mt-1 z-50">
+                  <div className="bg-white rounded-lg shadow-xl border border-gray-100 overflow-hidden w-56">
+                    <Link
+                      to={category.path}
+                      className="block px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-rose-500 border-b border-gray-100"
+                      onClick={() => setActiveCategory(null)}
+                    >
+                      All {category.name}
+                    </Link>
+                    <div className="max-h-[60vh] overflow-y-auto custom-scrollbar">
+                      {category.subcategories.map((subcategory) => (
+                        <Link
+                          key={subcategory.name}
+                          to={subcategory.path}
+                          className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-rose-50 hover:text-rose-500 transition-colors duration-150"
+                          onClick={() => setActiveCategory(null)}
+                        >
+                          {subcategory.name}
+                        </Link>
+                      ))}
                     </div>
                   </div>
-                )}
-              </div>
-            ))}
-          </div>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
 
         {/* Mobile Navigation - Horizontal Scroll */}
         <div className="md:hidden -mx-4 relative z-50">
           {/* Main Categories */}
-          <div className="flex space-x-1 overflow-x-auto px-4 pt-3 pb-2 hide-scrollbar sticky top-16 z-50 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/70 border-b border-gray-200 scroll-smooth snap-x snap-mandatory">
+          <div className="flex space-x-1 overflow-x-auto px-4 pt-3 pb-2 hide-scrollbar sticky top-16 z-50 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/70 border-b border-gray-200">
             {categories.map((category) => (
-              <div key={category.name} className="shrink-0 snap-start">
+              <div key={category.name} className="shrink-0">
                 <button
                   onClick={(e) => {
                     // First tap opens subcategories, second tap navigates to the category page
@@ -400,8 +398,6 @@ const Header = () => {
               -ms-overflow-style: none;
               scrollbar-width: none;
               scrollbar-height: none;
-              -webkit-overflow-scrolling: touch;
-              scroll-behavior: smooth;
             }
             .custom-scrollbar {
               scrollbar-width: thin;
