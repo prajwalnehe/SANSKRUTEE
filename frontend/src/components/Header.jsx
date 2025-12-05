@@ -31,8 +31,8 @@ const Header = () => {
         { name: 'Men Nehru Jackets', path: '/category/Men/men-nehru-jackets' },
         { name: 'Blazers', path: '/category/Men/blazers' },
         { name: 'Bottomwear', path: '/category/Men/bottomwear' },
-        { name: 'Jhodpuris', path: '/category/Men/jhodpuris' }
-        
+        { name: 'Jhodpuris', path: '/category/Men/jhodpuris' },
+        { name: 'Men Shirts', path: '/category/Men/men-shirts' }
       ]
     },
     {
