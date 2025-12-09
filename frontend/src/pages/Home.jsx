@@ -16,15 +16,23 @@ const Home = () => {
       <HeroSlider
         slides={[
           {
-            desktop: "https://res.cloudinary.com/duc9svg7w/image/upload/v1765128846/pants_gm97ca.svg",
+            desktop: "https://res.cloudinary.com/duc9svg7w/image/upload/v1765299332/Blue_and_White_Modern_Fashion_Store_Banner_2048_x_594_px_ga4muy.png",
             alt: 'TickNTrack - Premium Shoes & Watches Collection',
           },
           {
-            desktop: 'https://res.cloudinary.com/duc9svg7w/image/upload/v1765128866/White_Black_Sneakers_Landscape_Banner_2048_x_594_px_kn5az8.svg',
+            desktop: 'https://res.cloudinary.com/duc9svg7w/image/upload/v1765299330/Bone_Pink_Luxury_Premium_Isolated_Parfum_Banner_Landscape_2048_x_594_px_jqytrt.png',
+            alt: 'Festive Offer - TickNTrack',
+          },
+          {
+            desktop: 'https://res.cloudinary.com/duc9svg7w/image/upload/v1765299332/Brown_White_Modern_Fashion_Banner_2048_x_594_px_kfx9s8.png',
+            alt: 'Festive Offer - TickNTrack',
+          },
+          {
+            desktop: 'https://res.cloudinary.com/duc9svg7w/image/upload/v1765304356/White_Fashion_Shoes_For_Men_Themes_Facebook_Cover_2048_x_594_px_ihwivu.png',
             alt: 'Festive Offer - TickNTrack',
           },
         ]}
-        mobileSrc="https://res.cloudinary.com/dvkxgrcbv/image/upload/v1765129835/a705c12f-57b9-4b1f-95ef-219c47ab2653_vrzdjh.png"
+        mobileSrc="https://res.cloudinary.com/duc9svg7w/image/upload/v1765299343/Brown_Minimalist_Lifestyle_Fashion_Instagram_Post_1080_x_1080_px_yi1bzg.png"
       />
       
       {/* Main Content Area */}
@@ -63,41 +71,57 @@ const Home = () => {
         
         {/* Products Section without background */}
         <section className="py-6">
-          <FeaturedProducts category="shirts" /> 
+          <FeaturedProducts category="shirts" layout="grid" /> 
         </section>
 
         {/* Banner Image */}
         <section className="py-8">
           <div className="w-full relative">
             <img 
-              src="https://res.cloudinary.com/dvkxgrcbv/image/upload/v1765280382/unnamed_x1e9mo.jpg"
+              src="https://res.cloudinary.com/duc9svg7w/image/upload/v1765303741/Minimalist_Elegant_New_Perfume_Collection_Facebook_Ad_nqbrm8.png"
               alt="Special Offer Banner"
               className="w-full h-auto object-cover rounded-lg shadow-md"
             />
-            {/* Overlay Content - Left Aligned */}
-            <div className="absolute left-8 md:left-50 top-1/2 -translate-y-1/2 z-10">
-              <p className="text-lg md:text-xl text-white mb-2">
-                Don't Miss Out!
-              </p>
-              <h3 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2 uppercase">
-                PERFUMES
-              </h3>
-              <p className="text-lg md:text-xl text-white mb-6">
-                at cost price
-              </p>
-              <Link
-                to="/category/accessories"
-                className="inline-block bg-white text-black px-6 py-3 md:px-8 md:py-4 rounded-lg font-semibold text-sm md:text-base uppercase tracking-wide hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-lg"
-              >
-                SHOP NOW
-              </Link>
-            </div>
           </div>
         </section>
 
         {/* Perfumes Products Section */}
         <section className="py-6">
-          <FeaturedProducts category="accessories" /> 
+          <FeaturedProducts category="accessories" layout="grid" /> 
+          {/* Explore More Button */}
+          <div className="flex justify-center mt-8 mb-4">
+            <Link
+              to="/category/accessories"
+              className="inline-block bg-black text-white px-8 py-3 rounded-lg font-semibold text-sm md:text-base uppercase tracking-wide hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 shadow-lg"
+            >
+              Explore more perfume
+            </Link>
+          </div>
+        </section>
+
+        {/* New Perfumes Banner Section */}
+        <section className="py-8">
+          <div className="w-full relative">
+            <img 
+              src="https://res.cloudinary.com/duc9svg7w/image/upload/v1765304673/White_and_Black_Minimalist_Shoes_For_Men_Facebook_Cover_opdueo.png"
+              alt="Perfumes Banner"
+              className="w-full h-auto object-cover rounded-lg shadow-md"
+            />
+          </div>
+        </section>
+
+        {/* Shoes Products Section */}
+        <section className="py-6">
+          <FeaturedProducts category="Shoes" layout="grid" /> 
+          {/* Explore More Button */}
+          <div className="flex justify-center mt-8 mb-4">
+            <Link
+              to="/category/shoes"
+              className="inline-block bg-black text-white px-8 py-3 rounded-lg font-semibold text-sm md:text-base uppercase tracking-wide hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 shadow-lg"
+            >
+              Explore more shoes
+            </Link>
+          </div>
         </section>
 
         {/* You could add more sections here like Testimonials, Instagram Feed, or Brand Story */}

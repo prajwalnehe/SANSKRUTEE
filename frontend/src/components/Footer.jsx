@@ -84,9 +84,9 @@ const Footer = () => {
             {/* Logo/Brand */}
           <Link to="/" className="flex-shrink-0">
             <img 
-              src="https://res.cloudinary.com/duc9svg7w/image/upload/v1763530737/a0c8f605-a031-4da5-a3e9-dfcab88fcaec-removebg-preview_s9m928.png" 
+              src="https://res.cloudinary.com/duc9svg7w/image/upload/v1765301725/Black_and_White_Bold_Line_Minimalist_Design_Studio_Logo_1_wfnkbf.png" 
               alt="STYLEIT Logo" 
-              className="h-20 md:h-24 w-auto hover:scale-105 transition-transform duration-300 mb-3"
+              className="h-50 md:h-50 w-auto hover:scale-105 transition-transform duration-300 mb-3"
             />
           </Link>
             
