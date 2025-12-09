@@ -44,7 +44,7 @@ const productSchema = new mongoose.Schema(
 
       shoeType: { type: String },
 
-      // -------- T-SHIRT --------
+      // -------- TSHIRT --------
 
       tshirtSize: { type: String }, // S, M, L, XL, etc.
 

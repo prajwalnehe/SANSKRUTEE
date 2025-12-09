@@ -1,0 +1,263 @@
+[
+  {
+    "title": "Men's Oversized Cotton Tshirt",
+    "mrp": 999,
+    "discountPercent": 30,
+      "description": "This oversized cotton Tshirt is designed for men who prefer a relaxed yet stylish everyday outfit. The breathable cotton fabric ensures all-day comfort, while the modern oversized fit offers a trendy and effortless look.",
+    "category": "TShirts",
+    "categoryId": "679a3c4f92b12a45bc12ef91",
+    "product_info": {
+      "brand": "UrbanWear",
+      "manufacturer": "UrbanWear Clothing Co.",
+      "tshirtSize": "L",
+      "tshirtMaterial": "100% Cotton",
+      "tshirtFit": "Oversized",
+      "tshirtSleeve": "Half Sleeve",
+      "tshirtNeck": "Round Neck",
+      "tshirtColor": "Beige",
+      "IncludedComponents": "1 Tshirt"
+    },
+    "images": {
+      "image1": "https://res.cloudinary.com/dvkxgrcbv/image/upload/v1764938736/1230_ycrdof.jpg",
+      "image2": "https://images.unsplash.com/photo-1596756854580-0a70196720f9?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+      "image3": "https://images.unsplash.com/photo-1596756854580-0a70196720f9?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+    }
+  },
+  {
+    "title": "Nomad: Compass Super Oversized Tshirts",
+    "mrp": 2399,
+    "discountPercent": 0,
+    "description": "Premium heavy gauge fabric with super oversized fit. Perfect for casual wear and street style.",
+    "category": "TShirts",
+    "categoryId": "679a3c4f92b12a45bc12ef91",
+    "product_info": {
+      "brand": "Nomad",
+      "manufacturer": "NOMAD LIFE",
+      "tshirtSize": "XL",
+      "tshirtMaterial": "Premium Heavy Gauge Fabric",
+      "tshirtFit": "Super Oversized",
+      "tshirtSleeve": "Half Sleeve",
+      "tshirtNeck": "Round Neck",
+      "tshirtColor": "Black",
+      "IncludedComponents": "1 Tshirt"
+    },
+    "images": {
+      "image1": "https://images.unsplash.com/photo-1596756854580-0a70196720f9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80"
+    }
+  },
+  {
+    "title": "TSS Originals: Trident Oversized Tshirts",
+    "mrp": 1399,
+    "discountPercent": 20,
+    "description": "Oversized fit Tshirt with premium heavy gauge fabric. Comfortable and stylish.",
+    "category": "TShirts",
+    "categoryId": "679a3c4f92b12a45bc12ef91",
+    "product_info": {
+      "brand": "TSS Originals",
+      "manufacturer": "TSS Originals",
+      "tshirtSize": "L",
+      "tshirtMaterial": "Premium Heavy Gauge Fabric",
+      "tshirtFit": "Oversized",
+      "tshirtSleeve": "Half Sleeve",
+      "tshirtNeck": "Round Neck",
+      "tshirtColor": "White",
+      "IncludedComponents": "1 Tshirt"
+    },
+    "images": {
+      "image1": "https://images.unsplash.com/photo-1618677603289-f5d60e7e39dd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80"
+    }
+  },
+  {
+    "title": "Classic White Formal Shirt",
+    "mrp": 1999,
+    "discountPercent": 25,
+    "description": "Premium quality formal shirt perfect for office wear and formal occasions. Made with high-quality cotton fabric.",
+    "category": "Shirts",
+    "categoryId": "679a3c4f92b12a45bc12ef92",
+    "product_info": {
+      "brand": "FormalWear",
+      "manufacturer": "FormalWear Co.",
+      "tshirtSize": "M",
+      "tshirtMaterial": "100% Cotton",
+      "tshirtFit": "Regular",
+      "tshirtSleeve": "Full Sleeve",
+      "tshirtNeck": "Collar",
+      "tshirtColor": "White",
+      "IncludedComponents": "1 Shirt"
+    },
+    "images": {
+      "image1": "https://images.unsplash.com/photo-1594938291221-94f18cbb708b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+    }
+  },
+  {
+    "title": "Blue Denim Casual Shirt",
+    "mrp": 1499,
+    "discountPercent": 15,
+    "description": "Stylish blue denim shirt for casual wear. Comfortable fit with modern design.",
+    "category": "Shirts",
+    "categoryId": "679a3c4f92b12a45bc12ef92",
+    "product_info": {
+      "brand": "CasualWear",
+      "manufacturer": "CasualWear Brand",
+      "tshirtSize": "L",
+      "tshirtMaterial": "Cotton Denim",
+      "tshirtFit": "Regular",
+      "tshirtSleeve": "Full Sleeve",
+      "tshirtNeck": "Collar",
+      "tshirtColor": "Blue",
+      "IncludedComponents": "1 Shirt"
+    },
+    "images": {
+      "image1": "https://images.unsplash.com/photo-1603252109303-2751441dd157?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+    }
+  },
+  {
+    "title": "Slim Fit Denim Jeans",
+    "mrp": 2499,
+    "discountPercent": 20,
+    "description": "Classic slim fit denim jeans. Perfect fit with stretch fabric for comfort.",
+    "category": "Pants",
+    "categoryId": "679a3c4f92b12a45bc12ef93",
+    "product_info": {
+      "brand": "DenimCo",
+      "manufacturer": "DenimCo",
+      "pantWaist": "32",
+      "pantFit": "Slim",
+      "pantMaterial": "Denim",
+      "pantColor": "Blue",
+      "pantType": "Jeans",
+      "IncludedComponents": "1 Jeans"
+    },
+    "images": {
+      "image1": "https://images.unsplash.com/photo-1542272604-787c3835535d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+    }
+  },
+  {
+    "title": "Black Formal Trousers",
+    "mrp": 1899,
+    "discountPercent": 10,
+    "description": "Premium black formal trousers for office and formal occasions.",
+    "category": "Pants",
+    "categoryId": "679a3c4f92b12a45bc12ef93",
+    "product_info": {
+      "brand": "FormalWear",
+      "manufacturer": "FormalWear Co.",
+      "pantWaist": "34",
+      "pantFit": "Regular",
+      "pantMaterial": "Cotton",
+      "pantColor": "Black",
+      "pantType": "Formal",
+      "IncludedComponents": "1 Trousers"
+    },
+    "images": {
+      "image1": "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+    }
+  },
+  {
+    "title": "White Canvas Sneakers",
+    "mrp": 2999,
+    "discountPercent": 30,
+    "description": "Classic white canvas sneakers. Comfortable and stylish for everyday wear.",
+    "category": "Shoes",
+    "categoryId": "679a3c4f92b12a45bc12ef94",
+    "product_info": {
+      "brand": "SneakerCo",
+      "manufacturer": "SneakerCo",
+      "availableSizes": ["7", "8", "9", "10", "11"],
+      "shoeSize": "9",
+      "shoeMaterial": "Canvas",
+      "shoeColor": "White",
+      "shoeType": "Sneakers",
+      "IncludedComponents": "1 Pair of Sneakers"
+    },
+    "images": {
+      "image1": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+    }
+  },
+  {
+    "title": "Black Leather Formal Shoes",
+    "mrp": 3999,
+    "discountPercent": 25,
+    "description": "Premium black leather formal shoes. Perfect for office and formal events.",
+    "category": "Shoes",
+    "categoryId": "679a3c4f92b12a45bc12ef94",
+    "product_info": {
+      "brand": "FormalShoes",
+      "manufacturer": "FormalShoes Co.",
+      "availableSizes": ["8", "9", "10", "11"],
+      "shoeSize": "10",
+      "shoeMaterial": "Leather",
+      "shoeColor": "Black",
+      "shoeType": "Formal",
+      "IncludedComponents": "1 Pair of Shoes"
+    },
+    "images": {
+      "image1": "https://images.unsplash.com/photo-1549298916-b41d501d3772?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+    }
+  },
+  {
+    "title": "Hugo Boss The Scent Perfume",
+    "mrp": 5999,
+    "discountPercent": 40,
+    "description": "Premium men's fragrance by Hugo Boss. Long-lasting scent perfect for special occasions.",
+    "category": "Accessories",
+    "categoryId": "679a3c4f92b12a45bc12ef95",
+    "product_info": {
+      "brand": "Hugo Boss",
+      "manufacturer": "Hugo Boss",
+      "IncludedComponents": "1 Perfume Bottle (100ml)"
+    },
+    "images": {
+      "image1": "https://res.cloudinary.com/dvkxgrcbv/image/upload/v1765280382/unnamed_x1e9mo.jpg"
+    }
+  },
+  {
+    "title": "Gucci Guilty Absolute Pour Femme Perfume",
+    "mrp": 8999,
+    "discountPercent": 35,
+    "description": "Luxury women's fragrance by Gucci. Elegant and sophisticated scent.",
+    "category": "Accessories",
+    "categoryId": "679a3c4f92b12a45bc12ef95",
+    "product_info": {
+      "brand": "Gucci",
+      "manufacturer": "Gucci",
+      "IncludedComponents": "1 Perfume Bottle (100ml)"
+    },
+    "images": {
+      "image1": "https://res.cloudinary.com/dvkxgrcbv/image/upload/v1765280382/unnamed_x1e9mo.jpg"
+    }
+  },
+  {
+    "title": "Roberto Cavalli Perfume",
+    "mrp": 4999,
+    "discountPercent": 30,
+    "description": "Exotic and luxurious fragrance by Roberto Cavalli. Unique blend of scents.",
+    "category": "Accessories",
+    "categoryId": "679a3c4f92b12a45bc12ef95",
+    "product_info": {
+      "brand": "Roberto Cavalli",
+      "manufacturer": "Roberto Cavalli",
+      "IncludedComponents": "1 Perfume Bottle (100ml)"
+    },
+    "images": {
+      "image1": "https://res.cloudinary.com/dvkxgrcbv/image/upload/v1765280382/unnamed_x1e9mo.jpg"
+    }
+  },
+  {
+    "title": "Chanel Chance Parfum Hair Mist",
+    "mrp": 6999,
+    "discountPercent": 25,
+    "description": "Luxury hair mist by Chanel. Light and refreshing fragrance for hair.",
+    "category": "Accessories",
+    "categoryId": "679a3c4f92b12a45bc12ef95",
+    "product_info": {
+      "brand": "Chanel",
+      "manufacturer": "Chanel",
+      "IncludedComponents": "1 Hair Mist Bottle (100ml)"
+    },
+    "images": {
+      "image1": "https://res.cloudinary.com/dvkxgrcbv/image/upload/v1765280382/unnamed_x1e9mo.jpg"
+    }
+  }
+]
+

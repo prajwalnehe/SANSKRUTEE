@@ -10,6 +10,15 @@ const CATEGORY_GROUPS = {
   ]
 };
 
+// Category mapping for URL slugs to database category names
+const CATEGORY_MAPPING = {
+  'tshirts': ['TShirts', 't-shirt', 't-shirt', 'tshirt', 't shirt', 't shirts', 'T-Shirt', 'T-Shirts'],
+  't-shirts': ['TShirts', 't-shirt', 't-shirt', 'tshirt', 't shirt', 't shirts', 'T-Shirt', 'T-Shirts'],
+  't shirt': ['TShirts', 't-shirt', 't-shirt', 'tshirt', 't shirt', 't shirts', 'T-Shirt', 'T-Shirts'],
+  't shirts': ['TShirts', 't-shirt', 't-shirt', 'tshirt', 't shirt', 't shirts', 'T-Shirt', 'T-Shirts'],
+  'shirts': ['shirts', 'shirt', 'Shirts', 'Shirt']
+};
+
 export const getProducts = async (req, res) => {
   try {
     // Accept either `subcategory` (preferred) or `category` query param
@@ -21,15 +30,44 @@ export const getProducts = async (req, res) => {
     console.log('Received request with query params:', req.query);
 
     if (category) {
-      // Try multiple ways to match the category or subcategory fields
-      const re = new RegExp(category, 'i');
-      const orConditions = [
-        { 'category.name': { $regex: re } },
-        { 'category': { $regex: re } },
-        { 'category.slug': { $regex: re } },
-        { 'subcategory': { $regex: re } },
-        { 'tags': { $regex: re } }
-      ];
+      // Check if there's a category mapping
+      const normalizedCategory = category.toLowerCase();
+      let searchTerms = [];
+      
+      // Use mapped categories if they exist, otherwise use the original category and try variations
+      if (CATEGORY_MAPPING[normalizedCategory]) {
+        searchTerms = CATEGORY_MAPPING[normalizedCategory];
+      } else {
+        // Fallback: try the category as-is and also try common variations
+        searchTerms = [category, normalizedCategory, category.toLowerCase(), category.toUpperCase()];
+      }
+      
+      // Build regex patterns for all search terms
+      const orConditions = [];
+      
+      // For shirts, we need to match only "shirt" or "shirts" and exclude "tshirt" variations
+      if (normalizedCategory === 'shirts') {
+        // Match exact "shirt" or "shirts" only (not "tshirt" or "TShirts")
+        // Use word boundaries to ensure exact match
+        orConditions.push(
+          { 'category': { $regex: /^shirt$/i } },
+          { 'category': { $regex: /^shirts$/i } },
+          { 'category.name': { $regex: /^shirt$/i } },
+          { 'category.name': { $regex: /^shirts$/i } }
+        );
+      } else {
+        // For tshirts, match all variations including "TShirts"
+        searchTerms.forEach(term => {
+          const re = new RegExp(term, 'i');
+          orConditions.push(
+            { 'category.name': { $regex: re } },
+            { 'category': { $regex: re } },
+            { 'category.slug': { $regex: re } },
+            { 'subcategory': { $regex: re } },
+            { 'tags': { $regex: re } }
+          );
+        });
+      }
 
       if (CATEGORY_GROUPS[category]) {
         CATEGORY_GROUPS[category].forEach((sub) => {
@@ -37,8 +75,27 @@ export const getProducts = async (req, res) => {
         });
       }
 
-      query = { $or: orConditions };
+      // For shirts, add strict exclusion to prevent matching any Tshirt variations
+      if (normalizedCategory === 'shirts') {
+        query = {
+          $and: [
+            { $or: orConditions },
+            { category: { $ne: 'TShirts' } },
+            { category: { $ne: 'T-Shirts' } },
+            { category: { $ne: 'tshirts' } },
+            { category: { $ne: 't-shirts' } },
+            { category: { $ne: 'TShirt' } },
+            { category: { $ne: 'T-Shirt' } },
+            { category: { $not: { $regex: /tshirt/i } } } },
+            { category: { $not: { $regex: /t-shirt/i } } } },
+            { category: { $not: { $regex: /t shirt/i } } } }
+          ]
+        };
+      } else {
+        query = { $or: orConditions };
+      }
 
+      console.log('Category mapping:', normalizedCategory, '→', searchTerms);
       console.log('Search query:', JSON.stringify(query, null, 2));
     }
 

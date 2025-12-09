@@ -135,15 +135,11 @@ const Navbar = () => {
   // Navigation links matching suuupply style
   const navLinks = [
     { name: 'all products', path: '/shop' },
-    { name: 't-shirts', path: '/category/t-shirts' },
+    { name: 'tshirts', path: '/category/tshirts' },
     { name: 'shirts', path: '/category/shirts' },
-    { name: 'knitwear', path: '/category/knitwear' },
-    { name: 'sweatshirts', path: '/category/sweatshirts' },
     { name: 'pants', path: '/category/pants' },
-    { name: 'outerwear', path: '/category/outerwear' },
     { name: 'shoes', path: '/category/shoes' },
-    { name: 'accessories', path: '/category/accessories' },
-    { name: 'brands', path: '/category/brands' },
+    { name: 'PERFUMES', path: '/category/accessories' },
     { name: 'about us', path: '/about' },
   ];
 

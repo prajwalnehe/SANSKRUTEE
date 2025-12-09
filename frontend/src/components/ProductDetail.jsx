@@ -160,7 +160,7 @@ const ProductDetail = () => {
     const category = product.category.toLowerCase();
     const info = product.product_info;
 
-    if (info.tshirtSize || info.tshirtMaterial || category.includes('t-shirt') || category.includes('tshirt')) {
+    if (info.tshirtSize || info.tshirtMaterial || category.includes('tshirt') || category.includes('TShirt')) {
       return 'tshirt';
     }
     if (info.shoeSize || info.shoeType || category.includes('shoe') || category.includes('footwear')) {
@@ -211,7 +211,7 @@ const ProductDetail = () => {
     if (info.manufacturer) fields.push({ label: 'Manufacturer', value: info.manufacturer });
     if (product.category) fields.push({ label: 'Category', value: product.category });
 
-    // T-Shirt specific fields
+    // Tshirt specific fields
     if (productType === 'tshirt') {
       if (info.tshirtMaterial) fields.push({ label: 'Material', value: info.tshirtMaterial });
       if (info.tshirtColor) fields.push({ label: 'Color', value: info.tshirtColor });
