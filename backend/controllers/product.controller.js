@@ -86,9 +86,9 @@ export const getProducts = async (req, res) => {
             { category: { $ne: 't-shirts' } },
             { category: { $ne: 'TShirt' } },
             { category: { $ne: 'T-Shirt' } },
-            { category: { $not: { $regex: /tshirt/i } } } },
-            { category: { $not: { $regex: /t-shirt/i } } } },
-            { category: { $not: { $regex: /t shirt/i } } } }
+            { category: { $not: { $regex: /tshirt/i } } },
+            { category: { $not: { $regex: /t-shirt/i } } },
+            { category: { $not: { $regex: /t shirt/i } } }
           ]
         };
       } else {

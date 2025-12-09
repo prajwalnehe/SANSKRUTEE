@@ -6,7 +6,7 @@ import { sarees } from '../../frontend/src/data/sarees.js';
 async function migrate() {
   try {
     // Connect to database
-    await connectDB(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/STYLEIT');
+    await connectDB(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/saree_sansar');
     
     console.log('Starting migration...');
     

@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import Banner from './Banner';
 import Header from './Header';
 import Navbar from './Navbar';
 import Footer from './Footer';
@@ -22,10 +21,13 @@ const Layout = () => {
 
   return (
     <div className="flex flex-col min-h-screen" style={{ '--app-header-height': `${headerHeight}px` }}>
-      {/* Banner and Navbar - Fixed at top */}
+      {/* Navbar and Header - Fixed at top */}
       <div ref={headerWrapRef} className="fixed top-0 left-0 right-0 z-50 bg-white">
-        <Banner />
-        <Navbar />
+        <div>
+          <Navbar />
+        </div>
+        <div className="h-px bg-black/10" aria-hidden="true" />
+        <Header />
       </div>
 
       {/* Spacer equal to header height to avoid overlap */}

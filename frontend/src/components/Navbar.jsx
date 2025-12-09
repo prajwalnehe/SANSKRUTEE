@@ -201,102 +201,37 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* Mobile Search - Takes available space between logo and menu */}
-          <div className="md:hidden flex-1 mx-2 sm:mx-3 max-w-[calc(100%-200px)]" ref={searchWrapRefMobile}>
-            <div className="relative w-full">
-              <input
-                type="text"
-                placeholder="Search..."
-                value={searchQuery}
-                onChange={(e) => { const v = e.target.value; setSearchQuery(v); setSearchOpen(v.trim().length >= 2); }}
-                onKeyPress={handleSearchKeyPress}
-                onFocus={() => { if (searchQuery.trim().length >= 2) setSearchOpen(true); }}
-                className="w-full px-3 py-1.5 pl-8 pr-2 text-xs sm:text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-black transition-all"
-              />
-              <button
-                onClick={handleSearch}
-                className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black z-10"
-                type="button"
-                aria-label="Search"
-              >
-                <svg className="w-4 h-4 sm:w-4.5 sm:h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </button>
-              {searchOpen && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-[80] overflow-hidden max-h-[70vh]">
-                  {searchLoading && (
-                    <div className="px-3 py-2 text-xs text-gray-500">Searching…</div>
-                  )}
-                  {!searchLoading && searchQuery.trim() && searchResults.length === 0 && (
-                    <div className="px-3 py-2 text-xs text-gray-500">No products found</div>
-                  )}
-                  {!searchLoading && searchResults.length > 0 && (
-                    <ul className="max-h-[60vh] overflow-auto divide-y divide-gray-100">
-                      {searchResults.slice(0, 6).map((p) => (
-                        <li key={p._id || p.id || p.slug}>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setSearchOpen(false);
-                              navigate(`/product/${p._id || p.id || ''}`);
-                            }}
-                            className="w-full flex items-center gap-2 px-3 py-2.5 hover:bg-gray-50 text-left"
-                          >
-                            <img
-                              src={p.images?.image1 || p.image || 'https://via.placeholder.com/60x80?text=No+Image'}
-                              alt={p.title || p.name || 'Product'}
-                              className="w-10 h-12 object-cover rounded-md border border-gray-100 flex-shrink-0"
-                              onError={(e) => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/60x80?text=No+Image'; }}
-                            />
-                            <div className="min-w-0 flex-1">
-                              <p className="text-xs font-medium text-gray-900 truncate">{p.title || p.name || 'Product'}</p>
-                              {p.price && (
-                                <p className="text-[10px] text-gray-600">₹{Number(p.price).toLocaleString()}</p>
-                              )}
-                            </div>
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-
           {/* Right Side Icons */}
           <div className="flex items-center space-x-0.5 sm:space-x-1 md:space-x-2 lg:space-x-3 xl:space-x-4 flex-shrink-0">
-            {/* Search Icon - Desktop & Tablet */}
+            {/* Search Icon - Desktop */}
             <div className="hidden md:block relative" ref={searchWrapRefDesktop}>
               <button
                 onClick={() => setSearchOpen(!searchOpen)}
-                className="p-1.5 md:p-2 text-gray-700 hover:text-black transition-colors"
+                className="p-1.5 sm:p-2 text-gray-700 hover:text-black transition-colors"
                 aria-label="Search"
               >
-                <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </button>
               {searchOpen && (
-                <div className="absolute right-0 md:right-auto md:left-1/2 md:-translate-x-1/2 top-full mt-2 w-[calc(100vw-2rem)] max-w-[90vw] md:w-80 lg:w-96 xl:w-[28rem] bg-white border border-gray-200 rounded-lg shadow-xl z-[80] p-3 md:p-4">
+                <div className="absolute right-0 top-full mt-2 w-72 sm:w-80 lg:w-96 bg-white border border-gray-200 rounded-lg shadow-xl z-[80] p-3 sm:p-4">
                   <input
                     type="text"
-                    placeholder="Search products..."
+                    placeholder="Search..."
                     value={searchQuery}
                     onChange={(e) => { const v = e.target.value; setSearchQuery(v); setSearchOpen(v.trim().length >= 2); }}
                     onKeyPress={handleSearchKeyPress}
-                    className="w-full px-3 py-2 text-sm md:text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black"
-                    autoFocus
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black"
                   />
                   {searchLoading && (
-                    <div className="px-3 md:px-4 py-2 md:py-3 text-xs md:text-sm text-gray-500">Searching…</div>
+                    <div className="px-4 py-3 text-sm text-gray-500">Searching…</div>
                   )}
                   {!searchLoading && searchQuery.trim() && searchResults.length === 0 && (
-                    <div className="px-3 md:px-4 py-2 md:py-3 text-xs md:text-sm text-gray-500">No products found</div>
+                    <div className="px-4 py-3 text-sm text-gray-500">No products found</div>
                   )}
                   {!searchLoading && searchResults.length > 0 && (
-                    <ul className="max-h-[60vh] md:max-h-80 overflow-auto divide-y divide-gray-100 mt-2">
+                    <ul className="max-h-80 overflow-auto divide-y divide-gray-100 mt-2">
                       {searchResults.slice(0, 8).map((p) => (
                         <li key={p._id || p.id || p.slug}>
                           <button
@@ -305,18 +240,18 @@ const Navbar = () => {
                               setSearchOpen(false);
                               navigate(`/product/${p._id || p.id || ''}`);
                             }}
-                            className="w-full flex items-center gap-2 md:gap-3 px-3 md:px-4 py-2 md:py-3 hover:bg-gray-50 text-left"
+                            className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 text-left"
                           >
                             <img
                               src={p.images?.image1 || p.image || 'https://via.placeholder.com/60x80?text=No+Image'}
                               alt={p.title || p.name || 'Product'}
-                              className="w-10 h-12 md:w-12 md:h-16 object-cover rounded-md border border-gray-100 flex-shrink-0"
+                              className="w-12 h-16 object-cover rounded-md border border-gray-100"
                               onError={(e) => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/60x80?text=No+Image'; }}
                             />
                             <div className="min-w-0 flex-1">
-                              <p className="text-xs md:text-sm font-medium text-gray-900 truncate">{p.title || p.name || 'Product'}</p>
+                              <p className="text-sm font-medium text-gray-900 truncate">{p.title || p.name || 'Product'}</p>
                               {p.price && (
-                                <p className="text-[10px] md:text-xs text-gray-600">₹{Number(p.price).toLocaleString()}</p>
+                                <p className="text-xs text-gray-600">₹{Number(p.price).toLocaleString()}</p>
                               )}
                             </div>
                           </button>
@@ -328,11 +263,73 @@ const Navbar = () => {
               )}
             </div>
 
-            {/* User Icon - Hidden on mobile */}
+            {/* Mobile Search - Smaller */}
+            <div className="md:hidden relative w-20 sm:w-24" ref={searchWrapRefMobile}>
+              <input
+                type="text"
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={(e) => { const v = e.target.value; setSearchQuery(v); setSearchOpen(v.trim().length >= 2); }}
+                onKeyPress={handleSearchKeyPress}
+                onFocus={() => { if (searchQuery.trim().length >= 2) setSearchOpen(true); }}
+                className="w-full px-2 py-1 pl-6 pr-1 text-[10px] sm:text-xs border border-gray-300 rounded-full focus:outline-none focus:ring-1 focus:ring-black"
+              />
+              <button
+                onClick={handleSearch}
+                className="absolute left-1.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black"
+                type="button"
+                aria-label="Search"
+              >
+                <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </button>
+              {searchOpen && (
+                <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-[80] overflow-hidden max-h-[70vh]">
+                  {searchLoading && (
+                    <div className="px-4 py-3 text-sm text-gray-500">Searching…</div>
+                  )}
+                  {!searchLoading && searchQuery.trim() && searchResults.length === 0 && (
+                    <div className="px-4 py-3 text-sm text-gray-500">No products found</div>
+                  )}
+                  {!searchLoading && searchResults.length > 0 && (
+                    <ul className="max-h-80 overflow-auto divide-y divide-gray-100">
+                      {searchResults.slice(0, 8).map((p) => (
+                        <li key={p._id || p.id || p.slug}>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSearchOpen(false);
+                              navigate(`/product/${p._id || p.id || ''}`);
+                            }}
+                            className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 text-left"
+                          >
+                            <img
+                              src={p.images?.image1 || p.image || 'https://via.placeholder.com/60x80?text=No+Image'}
+                              alt={p.title || p.name || 'Product'}
+                              className="w-12 h-16 object-cover rounded-md border border-gray-100"
+                              onError={(e) => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/60x80?text=No+Image'; }}
+                            />
+                            <div className="min-w-0 flex-1">
+                              <p className="text-sm font-medium text-gray-900 truncate">{p.title || p.name || 'Product'}</p>
+                              {p.price && (
+                                <p className="text-xs text-gray-600">₹{Number(p.price).toLocaleString()}</p>
+                              )}
+                            </div>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* User Icon */}
             {isAuthenticated ? (
               <Link
                 to="/profile"
-                className="hidden md:flex p-1 sm:p-1.5 md:p-2 text-gray-700 hover:text-black transition-colors flex-shrink-0"
+                className="p-1 sm:p-1.5 md:p-2 text-gray-700 hover:text-black transition-colors flex-shrink-0"
                 title="Profile"
               >
                 <svg className="w-4 h-4 sm:w-4 sm:h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -342,7 +339,7 @@ const Navbar = () => {
             ) : (
               <button
                 onClick={handleLogin}
-                className="hidden md:flex p-1 sm:p-1.5 md:p-2 text-gray-700 hover:text-black transition-colors flex-shrink-0"
+                className="p-1 sm:p-1.5 md:p-2 text-gray-700 hover:text-black transition-colors flex-shrink-0"
                 title="Sign In"
               >
                 <svg className="w-4 h-4 sm:w-4 sm:h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -351,8 +348,8 @@ const Navbar = () => {
               </button>
             )}
 
-            {/* Cart Icon - Hidden on mobile */}
-            <Link to="/cart" className="hidden md:flex p-1 sm:p-1.5 md:p-2 text-gray-700 hover:text-black relative flex-shrink-0">
+            {/* Cart Icon */}
+            <Link to="/cart" className="p-1 sm:p-1.5 md:p-2 text-gray-700 hover:text-black relative flex-shrink-0">
               <svg className="w-4 h-4 sm:w-4 sm:h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>

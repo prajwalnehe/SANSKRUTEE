@@ -16,7 +16,7 @@ const About = () => {
         <div className="max-w-4xl mx-auto mb-20">
           <div className="text-center mb-12">
             <p className="text-lg text-gray-700 leading-relaxed mb-6">
-              At STYLEIT, we celebrate the timeless grace of Indian women through the nine yards of elegance — the saree. Our name reflects what we stand for — a world of sarees that unites the diverse weaves, colors, and stories of India under one roof.
+              At PARIDHAAN, we celebrate the timeless grace of Indian women through the nine yards of elegance — the saree. Our name reflects what we stand for — a world of sarees that unites the diverse weaves, colors, and stories of India under one roof.
             </p>
             <p className="text-lg text-gray-700 leading-relaxed">
               From the looms of Banaras to the threads of Kanchipuram, from Bengal's soft cottons to Gujarat's vibrant Patolas — every saree in our collection carries a piece of tradition, culture, and craftsmanship. Each drape is not just a fabric, but a story woven with love, skill, and heritage.
@@ -30,14 +30,14 @@ const About = () => {
             OUR VISION
           </h2>
           <p className="text-lg text-gray-700 leading-relaxed">
-            To revive, preserve, and promote India's rich handloom heritage while blending it with contemporary elegance. STYLEIT strives to make traditional artistry accessible to every woman who believes in grace with authenticity.
+            To revive, preserve, and promote India's rich handloom heritage while blending it with contemporary elegance. PARIDHAAN strives to make traditional artistry accessible to every woman who believes in grace with authenticity.
           </p>
         </div>
 
         {/* What Makes Us Special */}
         <div className="mb-20">
           <h2 className="text-3xl font-light tracking-wider mb-12 text-gray-900 text-center">
-            WHAT MAKES STYLEIT SPECIAL?
+            WHAT MAKES PARIDHAAN SPECIAL?
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             
@@ -87,16 +87,16 @@ const About = () => {
         {/* Closing Message */}
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl font-light tracking-wider mb-8 text-gray-900">
-            CELEBRATE EVERY MOMENT WITH STYLEIT
+            CELEBRATE EVERY MOMENT WITH PARIDHAAN
           </h2>
           <p className="text-lg text-gray-700 leading-relaxed mb-6">
-            Be it a Kanjivaram that shines at weddings, a soft linen saree for daytime charm, or a Banarasi that turns every occasion into a celebration — STYLEIT brings you collections that make every woman feel special.
+            Be it a Kanjivaram that shines at weddings, a soft linen saree for daytime charm, or a Banarasi that turns every occasion into a celebration — PARIDHAAN brings you collections that make every woman feel special.
           </p>
           <p className="text-lg text-gray-700 leading-relaxed mb-8">
             Our sarees aren't just garments — they're a tribute to Indian craftsmanship, a reflection of tradition, and a celebration of you.
           </p>
           <p className="text-xl font-light text-amber-700 italic tracking-wide">
-            Discover your story. Drape your tradition. Only at STYLEIT.
+            Discover your story. Drape your tradition. Only at PARIDHAAN.
           </p>
         </div>
 
