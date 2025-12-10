@@ -609,10 +609,10 @@ const ProductList = ({ defaultCategory } = {}) => {
                                                 {/* Heart Icon - Top Right (Always Visible) */}
                                                 <button 
                                                     onClick={(e) => toggleWishlist(p, e)} 
-                                                    className="absolute top-3 right-3 p-1.5 bg-white/95 hover:bg-white rounded-full transition-all duration-200 z-10 shadow-sm"
+                                                    className="absolute top-2 right-2 sm:top-3 sm:right-3 p-1 sm:p-1.5 md:p-2 bg-white/95 hover:bg-white rounded-full transition-all duration-200 z-10 shadow-sm"
                                                 >
                                                     <FaHeart 
-                                                        className={`w-4 h-4 transition-colors ${
+                                                        className={`w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 transition-colors ${
                                                             wishlisted 
                                                                 ? 'text-pink-500' 
                                                                 : 'text-gray-700 hover:text-pink-500'

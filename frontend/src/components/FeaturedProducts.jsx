@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 // FaHeart is used for the favorite icon seen in the top right of the cards
 import { FaHeart, FaStar, FaChevronLeft, FaChevronRight } from 'react-icons/fa'; 
 import { fetchSarees } from '../services/api';
@@ -142,13 +142,13 @@ const FeaturedProducts = ({ category = 'shirts', layout = 'scroll', maxProducts 
                   
                   {/* Heart Icon (Top Right) */}
                   <button 
-                    className="absolute top-2 right-2 p-2 bg-white/70 rounded-full hover:bg-white text-gray-700 transition-colors duration-200 z-10"
+                    className="absolute top-2 right-2 sm:top-3 sm:right-3 p-1 sm:p-1.5 md:p-2 bg-white/70 rounded-full hover:bg-white text-gray-700 transition-colors duration-200 z-10"
                     onClick={(e) => {
                       e.stopPropagation();
                       // Handle wishlist logic here
                     }}
                   >
-                    <FaHeart className="w-4 h-4" />
+                    <FaHeart className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5" />
                   </button>
                 </div>
                 
@@ -163,6 +163,16 @@ const FeaturedProducts = ({ category = 'shirts', layout = 'scroll', maxProducts 
                 </div>
               </div>
             ))}
+          </div>
+          
+          {/* EXPLORE ALL LOOKS Button */}
+          <div className="flex justify-center mt-8 mb-4">
+            <Link
+              to="/shop"
+              className="inline-block bg-black text-white px-8 py-3 rounded-lg font-semibold text-sm uppercase tracking-wide hover:bg-black-100 transition-all duration-300 transform hover:scale-105 shadow-lg border border-gray-300"
+            >
+              EXPLORE ALL LOOKS
+            </Link>
           </div>
         </div>
       </section>

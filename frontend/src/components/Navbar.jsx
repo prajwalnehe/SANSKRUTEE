@@ -265,8 +265,8 @@ const Navbar = () => {
               )}
             </div>
 
-            {/* Mobile Search - Smaller */}
-            <div className="md:hidden relative flex-1 max-w-[180px] sm:max-w-[220px] mx-2 sm:mx-3" ref={searchWrapRefMobile}>
+            {/* Mobile Search - Responsive */}
+            <div className="md:hidden relative flex-1 max-w-[140px] xs:max-w-[160px] sm:max-w-[200px] mx-1 sm:mx-2" ref={searchWrapRefMobile}>
               <input
                 type="text"
                 placeholder="Search..."
@@ -274,15 +274,15 @@ const Navbar = () => {
                 onChange={(e) => { const v = e.target.value; setSearchQuery(v); setSearchOpen(v.trim().length >= 2); }}
                 onKeyPress={handleSearchKeyPress}
                 onFocus={() => { if (searchQuery.trim().length >= 2) setSearchOpen(true); }}
-                className="w-full px-2 py-1 pl-6 pr-1 text-[10px] sm:text-xs border border-gray-300 rounded-full focus:outline-none focus:ring-1 focus:ring-black"
+                className="w-full px-2 py-1.5 sm:py-2 pl-6 sm:pl-7 pr-2 text-[10px] xs:text-xs sm:text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-1 focus:ring-black transition-all"
               />
               <button
                 onClick={handleSearch}
-                className="absolute left-1.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black"
+                className="absolute left-1.5 sm:left-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black transition-colors"
                 type="button"
                 aria-label="Search"
               >
-                <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-3 h-3 xs:w-3.5 xs:h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </button>
@@ -377,21 +377,21 @@ const Navbar = () => {
             </Link>
 
             {/* Mobile menu button */}
-            <div className="flex items-center lg:hidden">
+            <div className="flex items-center lg:hidden ml-0.5 sm:ml-1">
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="inline-flex items-center justify-center p-1 sm:p-1.5 md:p-2 rounded-md text-gray-700 hover:text-black focus:outline-none"
+                className="inline-flex items-center justify-center p-1.5 sm:p-2 rounded-md text-gray-700 hover:text-black hover:bg-gray-100 active:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300 transition-all"
                 aria-expanded={isMobileMenuOpen}
                 aria-label="Toggle menu"
               >
                 <span className="sr-only">Open main menu</span>
                 {isMobileMenuOpen ? (
-                  <svg className="block h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <svg className="block h-5 w-5 sm:h-6 sm:w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 ) : (
-                  <svg className="block h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  <svg className="block h-5 w-5 sm:h-6 sm:w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
                   </svg>
                 )}
               </button>
