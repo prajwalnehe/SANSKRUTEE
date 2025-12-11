@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { FaRupeeSign, FaSpinner, FaFilter, FaTimes, FaChevronDown, FaChevronUp, FaHeart } from 'react-icons/fa';
+import { FaRupeeSign, FaSpinner, FaFilter, FaTimes, FaHeart } from 'react-icons/fa';
 // import { IoEyeOutline } from 'react-icons/io5'; // IoEyeOutline is imported but not used, can be removed if not needed later
 
 // --- IMPORTANT: This line is now the intended data source. Ensure 'fetchSarees' is available. ---
-import { fetchSarees } from '../services/api'; 
+import { fetchSarees } from '../services/api';
+import ProductFilters from './ProductFilters'; 
 // If '../services/api' does not exist, the component will fail to load data.
 
 // Add CSS to hide scrollbar (Good for Tailwind UI)
@@ -52,6 +53,8 @@ const ProductList = ({ defaultCategory } = {}) => {
     // Filter states
     const [selectedPriceRange, setSelectedPriceRange] = useState(null);
     const [selectedFabrics, setSelectedFabrics] = useState([]);
+    const [customMinPrice, setCustomMinPrice] = useState('');
+    const [customMaxPrice, setCustomMaxPrice] = useState('');
     
     // Accordion states for desktop filters
     const [openSections, setOpenSections] = useState({
@@ -60,34 +63,85 @@ const ProductList = ({ defaultCategory } = {}) => {
     });
     
     // --- Constants ---
-    const allPossibleFabrics = ['Silk', 'Cotton', 'Georgette', 'Chiffon', 'Linen', 'Satin', 'Velvet', 'Organza', 'Banarasi', 'Kanjivaram', 'Tussar', 'Maheshwari', 'Chanderi', 'Zari', 'Zardosi', 'Kalamkari', 'Bandhani', 'Patola', 'Paithani']; 
+    const allPossibleFabrics = [
+        '100% Cotton', 'Cotton', 'Cotton Blend', 'Cotton Lycra', 'Cotton Poly', 
+        'Cotton Poly Blend', 'Cotton Poly Mix', 'Cotton Rich', 'Lycra Blend', 'Pure Cotton',
+        'Silk', 'Georgette', 'Chiffon', 'Linen', 'Satin', 'Velvet', 'Organza', 
+        'Banarasi', 'Kanjivaram', 'Tussar', 'Maheshwari', 'Chanderi', 'Zari', 
+        'Zardosi', 'Kalamkari', 'Bandhani', 'Patola', 'Paithani'
+    ]; 
     
     // Derive available fabrics from fetched products
     const availableFabrics = React.useMemo(() => {
         const fabricSet = new Set();
         products.forEach(product => {
-            const possibleFabricFields = [product.fabric, product.material, product.product_info?.fabric, product.product_info?.material, product.details?.fabric, product.details?.material, product.description, product.title];
+            const possibleFabricFields = [
+                product.fabric, 
+                product.material, 
+                product.product_info?.fabric, 
+                product.product_info?.material,
+                product.product_info?.tshirtMaterial,
+                product.product_info?.pantMaterial,
+                product.product_info?.shoeMaterial,
+                product.details?.fabric, 
+                product.details?.material, 
+                product.description, 
+                product.title
+            ];
             possibleFabricFields.forEach(field => {
                 if (field) {
                     const fieldStr = String(field).toLowerCase();
+                    // Check for exact matches first (for specific blends)
                     allPossibleFabrics.forEach(fabric => {
-                        if (fieldStr.includes(fabric.toLowerCase())) {
-                            fabricSet.add(fabric);
+                        const fabricLower = fabric.toLowerCase();
+                        // Check for exact phrase match or word boundary match
+                        if (fieldStr.includes(fabricLower) || 
+                            fieldStr.includes(fabricLower.replace(/\s+/g, '')) ||
+                            (fabricLower.includes('cotton') && fieldStr.includes('cotton'))) {
+                            // For cotton variants, try to match more specifically
+                            if (fabricLower.includes('cotton')) {
+                                if (fabricLower.includes('100%') && (fieldStr.includes('100%') || fieldStr.includes('100 percent'))) {
+                                    fabricSet.add(fabric);
+                                } else if (fabricLower.includes('pure') && fieldStr.includes('pure')) {
+                                    fabricSet.add(fabric);
+                                } else if (fabricLower.includes('blend') && fieldStr.includes('blend')) {
+                                    fabricSet.add(fabric);
+                                } else if (fabricLower.includes('lycra') && fieldStr.includes('lycra')) {
+                                    fabricSet.add(fabric);
+                                } else if (fabricLower.includes('poly') && fieldStr.includes('poly')) {
+                                    fabricSet.add(fabric);
+                                } else if (fabricLower.includes('rich') && fieldStr.includes('rich')) {
+                                    fabricSet.add(fabric);
+                                } else if (fabricLower === 'cotton' && !fieldStr.includes('blend') && !fieldStr.includes('poly') && !fieldStr.includes('lycra')) {
+                                    fabricSet.add(fabric);
+                                }
+                            } else {
+                                fabricSet.add(fabric);
+                            }
                         }
                     });
                 }
             });
         });
         
+        // Always include common cotton variants if cotton is detected
+        if (Array.from(fabricSet).some(f => f.toLowerCase().includes('cotton'))) {
+            fabricSet.add('Cotton');
+            if (!Array.from(fabricSet).some(f => f.includes('100%'))) {
+                fabricSet.add('100% Cotton');
+            }
+        }
+        
         // Fallback or initialization fabrics if the API returns no specific fabric fields
         if (fabricSet.size === 0) {
-            return ['Silk', 'Cotton', 'Georgette']; 
+            return ['Cotton', '100% Cotton', 'Cotton Blend']; 
         }
         return Array.from(fabricSet).sort();
     }, [products]);
     
     // --- UPDATED PRICE RANGES ---
     const priceRanges = [
+      { id: 0, label: '₹100 - ₹300', min: 100, max: 300 },
       { id: 1, label: '₹300 - ₹1,000', min: 300, max: 1000 },
       { id: 2, label: '₹1,001 - ₹2,000', min: 1001, max: 2000 },
       { id: 3, label: '₹2,001 - ₹3,000', min: 2001, max: 3000 },
@@ -185,15 +239,25 @@ const ProductList = ({ defaultCategory } = {}) => {
         let result = [...products];
         
         // 1. Filter by price range
-        if (selectedPriceRange) {
+        if (selectedPriceRange !== null) {
             const range = priceRanges.find(r => r.id === selectedPriceRange);
             if (range) {
                 result = result.filter(p => {
                     // Use a fallback price calculation if price field is missing
                     const price = p.price || (p.mrp * (1 - (p.discountPercent || 0) / 100)) || p.mrp || 0;
-                    return price >= range.min && price <= range.max;
+                    return price >= range.min && (range.max === Infinity ? true : price <= range.max);
                 });
             }
+        }
+        
+        // Filter by custom price range if set
+        if (customMinPrice || customMaxPrice) {
+            result = result.filter(p => {
+                const price = p.price || (p.mrp * (1 - (p.discountPercent || 0) / 100)) || p.mrp || 0;
+                const min = customMinPrice ? Number(customMinPrice) : 0;
+                const max = customMaxPrice ? Number(customMaxPrice) : Infinity;
+                return price >= min && price <= max;
+            });
         }
         
         // 2. Filter by fabric
@@ -226,7 +290,7 @@ const ProductList = ({ defaultCategory } = {}) => {
         }
         
         setFilteredProducts(sorted);
-    }, [products, selectedPriceRange, selectedFabrics, sortOption]); 
+    }, [products, selectedPriceRange, selectedFabrics, sortOption, customMinPrice, customMaxPrice]); 
     
     // --- Filter Handlers ---
     const toggleFabric = useCallback((fabric) => {
@@ -240,6 +304,8 @@ const ProductList = ({ defaultCategory } = {}) => {
     const resetFilters = useCallback(() => {
         setSelectedPriceRange(null);
         setSelectedFabrics([]);
+        setCustomMinPrice('');
+        setCustomMaxPrice('');
     }, []);
 
     const toggleSection = useCallback((section) => {
@@ -377,93 +443,10 @@ const ProductList = ({ defaultCategory } = {}) => {
 
     const activeFilterCount = [
         selectedFabrics.length,
-        selectedPriceRange ? 1 : 0
+        selectedPriceRange !== null ? 1 : 0,
+        (customMinPrice || customMaxPrice) ? 1 : 0
     ].reduce((a, b) => a + b, 0);
 
-    // --- Filter Content Component (for Price and Material, below Categories) ---
-    const FilterContent = React.memo(() => (
-        <div className="space-y-6">
-            
-            {/* Price Range Filter */}
-            <div className="pt-4"> {/* Removed border-t for first element since Categories is gone */}
-                <button
-                    onClick={() => toggleSection('price')}
-                    className="flex justify-between items-center w-full mb-3 group"
-                >
-                    <h4 className="text-sm font-bold text-gray-900 group-hover:text-amber-700 transition-colors">PRICE</h4>
-                    {openSections.price ? <FaChevronUp className="text-gray-500 w-3 h-3" /> : <FaChevronDown className="text-gray-500 w-3 h-3" />}
-                </button>
-                
-                {openSections.price && (
-                    <div className="space-y-2">
-                        {priceRanges.map(range => (
-                            <div key={range.id} className="flex items-center">
-                                <input
-                                    type="radio"
-                                    id={`price-${range.id}`}
-                                    name="priceRange"
-                                    checked={selectedPriceRange === range.id}
-                                    onChange={() => setSelectedPriceRange(range.id)}
-                                    className="h-4 w-4 text-red-800 focus:ring-red-700 border-gray-300 cursor-pointer checked:bg-red-800"
-                                    style={{ accentColor: '#7A2A2A' }}
-                                />
-                                <label htmlFor={`price-${range.id}`} className="ml-3 text-sm text-gray-700 cursor-pointer">
-                                    {range.label}
-                                </label>
-                            </div>
-                        ))}
-                    </div>
-                )}
-            </div>
-            
-            {/* Material Filter */}
-            <div className="border-t border-gray-200 pt-4">
-                <button
-                    onClick={() => toggleSection('material')}
-                    className="flex justify-between items-center w-full mb-3 group"
-                >
-                    <h4 className="text-sm font-bold text-gray-900 group-hover:text-amber-700 transition-colors">FABRIC/MATERIAL</h4>
-                    {openSections.material ? <FaChevronUp className="text-gray-500 w-3 h-3" /> : <FaChevronDown className="text-gray-500 w-3 h-3" />}
-                </button>
-                
-                {openSections.material && (
-                    <div className="space-y-2 max-h-64 overflow-y-auto scrollbar-hide border border-gray-100 p-3 rounded-md">
-                        {availableFabrics && availableFabrics.length > 0 ? (
-                            availableFabrics.map(material => (
-                                <div key={material} className="flex items-center">
-                                    <input
-                                        type="checkbox"
-                                        id={`material-${material}`}
-                                        checked={selectedFabrics.includes(material)}
-                                        onChange={() => toggleFabric(material)}
-                                        className="h-4 w-4 text-red-800 focus:ring-red-700 border-gray-300 rounded cursor-pointer"
-                                        style={{ accentColor: '#7A2A2A' }}
-                                    />
-                                    <label htmlFor={`material-${material}`} className="ml-3 text-sm text-gray-700 cursor-pointer">
-                                        {material}
-                                    </label>
-                                </div>
-                            ))
-                        ) : (
-                            <p className="text-sm text-gray-500">No fabric options available</p>
-                        )}
-                    </div>
-                )}
-            </div>
-
-            {/* Clear All Button */}
-            {activeFilterCount > 0 && (
-                <div className="pt-4 border-t border-gray-200">
-                    <button 
-                        onClick={resetFilters}
-                        className="text-sm text-amber-700 hover:text-amber-800 font-medium transition-colors w-full text-center py-2 border border-amber-700 rounded-md"
-                    >
-                        Clear All Filters
-                    </button>
-                </div>
-            )}
-        </div>
-    ));
 
     if (error) {
       return (
@@ -528,8 +511,23 @@ const ProductList = ({ defaultCategory } = {}) => {
                     {/* --- DESKTOP SIDEBAR FILTERS (Now starting with Price filter) --- */}
                     <aside className="hidden lg:block w-72 flex-shrink-0">
                         <div className="sticky top-6 bg-white border border-gray-200 p-6 h-[calc(100vh-60px)] overflow-y-auto scrollbar-hide z-10 transition-shadow">
-                            
-                            <FilterContent /> 
+                            <ProductFilters
+                                priceRanges={priceRanges}
+                                selectedPriceRange={selectedPriceRange}
+                                setSelectedPriceRange={setSelectedPriceRange}
+                                customMinPrice={customMinPrice}
+                                customMaxPrice={customMaxPrice}
+                                setCustomMinPrice={setCustomMinPrice}
+                                setCustomMaxPrice={setCustomMaxPrice}
+                                openSections={openSections}
+                                toggleSection={toggleSection}
+                                availableFabrics={availableFabrics}
+                                selectedFabrics={selectedFabrics}
+                                toggleFabric={toggleFabric}
+                                activeFilterCount={activeFilterCount}
+                                resetFilters={resetFilters}
+                                categoryName={rawCategory}
+                            />
                         </div>
                     </aside>
 
@@ -678,7 +676,23 @@ const ProductList = ({ defaultCategory } = {}) => {
                         <div className="p-6">
                             {/* CategoryFilterList removed here */}
                             <div className="mt-0"> {/* Adjusted margin since categories is removed */}
-                                <FilterContent />
+                                <ProductFilters
+                                    priceRanges={priceRanges}
+                                    selectedPriceRange={selectedPriceRange}
+                                    setSelectedPriceRange={setSelectedPriceRange}
+                                    customMinPrice={customMinPrice}
+                                    customMaxPrice={customMaxPrice}
+                                    setCustomMinPrice={setCustomMinPrice}
+                                    setCustomMaxPrice={setCustomMaxPrice}
+                                    openSections={openSections}
+                                    toggleSection={toggleSection}
+                                    availableFabrics={availableFabrics}
+                                    selectedFabrics={selectedFabrics}
+                                    toggleFabric={toggleFabric}
+                                    activeFilterCount={activeFilterCount}
+                                    resetFilters={resetFilters}
+                                    categoryName={rawCategory}
+                                />
                             </div>
                         </div>
                         <div className="sticky bottom-0 bg-white border-t border-gray-200 px-6 py-4 shadow-2xl">
