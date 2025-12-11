@@ -19,7 +19,7 @@ const ProductFilters = ({
   categoryName
 }) => {
   // Categories that should not show FABRIC/MATERIAL filter
-  const categoriesWithoutMaterial = ['shoes', 'sneakers', 'accessories', 'perfumes'];
+  const categoriesWithoutMaterial = ['shoes', 'sunglasses', 'accessories', 'perfumes'];
   const shouldShowMaterialFilter = !categoryName || !categoriesWithoutMaterial.includes(categoryName.toLowerCase());
   const [showCustomRange, setShowCustomRange] = useState(false);
 

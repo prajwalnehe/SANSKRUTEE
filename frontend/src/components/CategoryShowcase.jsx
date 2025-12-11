@@ -35,9 +35,9 @@ const categories = [
   },
    {
     id: 6,
-    name: 'SNEAKERS',
-    image: 'https://res.cloudinary.com/dvkxgrcbv/image/upload/v1765270465/11624d7b-c45e-4f32-a460-59529077ee08.png',
-    path: '/category/sneakers'
+    name: 'Sunglasses',
+    image: 'https://res.cloudinary.com/dvkxgrcbv/image/upload/v1765461889/43753e06bc6de0fcff2745b62424bace_jzwtyc.jpg',
+    path: '/category/sunglasses'
   },
    {
     id: 7,

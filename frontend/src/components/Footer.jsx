@@ -16,7 +16,7 @@ const Footer = () => {
     { name: 'PANTS', path: '/category/pants' },
     { name: 'SHORTS', path: '/category/shorts' },
     { name: 'SHOES', path: '/category/shoes' },
-    { name: 'SNEAKERS', path: '/category/sneakers' },
+    { name: 'SUNGLASSES', path: '/category/sunglasses' },
     { name: 'WATCHES', path: '/category/watches' },
     { name: 'PERFUMES', path: '/category/perfumes' },
   ];
