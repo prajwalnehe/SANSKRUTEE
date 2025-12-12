@@ -56,11 +56,11 @@ const SignUp = () => {
           <div className="text-center">
             <Link to="/" className="inline-block mb-8">
               <h1 className="text-6xl font-serif font-bold text-black">
-                PARIDHAAN
+                SANSKRUTEE
               </h1>
             </Link>
             <p className="text-xl text-gray-600 max-w-md mx-auto leading-relaxed">
-              Create your account and explore premium kurtas and kurtis with exclusive offers.
+              Create your account and explore premium Fashions with exclusive offers.
             </p>
           </div>
         </div>
@@ -72,7 +72,7 @@ const SignUp = () => {
             <div className="lg:hidden text-center mb-8">
               <Link to="/" className="inline-block mb-6">
                 <h1 className="text-3xl font-serif font-bold text-black">
-                  PARIDHAAN
+                  SANSKRUTEE
                 </h1>
               </Link>
             </div>

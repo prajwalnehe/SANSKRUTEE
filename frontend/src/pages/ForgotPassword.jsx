@@ -34,7 +34,7 @@ const ForgotPassword = () => {
             <div className="text-center">
               <Link to="/" className="inline-block mb-8">
                 <h1 className="text-6xl font-serif font-bold bg-gradient-to-r from-pink-500 via-rose-500 to-amber-500 bg-clip-text text-transparent">
-                  PARIDHAAN
+                  SANSKRUTEE
                 </h1>
               </Link>
               <p className="text-xl text-gray-600 max-w-md mx-auto leading-relaxed">
@@ -112,7 +112,7 @@ const ForgotPassword = () => {
             <div className="lg:hidden text-center mb-8">
               <Link to="/" className="inline-block mb-6">
                 <h1 className="text-3xl font-serif font-bold bg-gradient-to-r from-pink-500 via-rose-500 to-amber-500 bg-clip-text text-transparent">
-                  PARIDHAAN
+                  SANSKRUTEE
                 </h1>
               </Link>
             </div>
