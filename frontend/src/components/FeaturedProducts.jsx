@@ -167,14 +167,14 @@ const FeaturedProducts = ({ category = 'shirts', layout = 'scroll', maxProducts 
           
           {/* EXPLORE ALL LOOKS Button - Hidden for perfumes and shoes categories */}
           {category !== 'perfumes' && category !== 'Shoes' && category !== 'shoes' && (
-            <div className="flex justify-center mt-8 mb-4">
-              <Link
-                to="/shop"
-                className="inline-block bg-black text-white px-8 py-3 rounded-lg font-semibold text-sm uppercase tracking-wide hover:bg-black-100 transition-all duration-300 transform hover:scale-105 shadow-lg border border-gray-300"
-              >
-                EXPLORE ALL LOOKS
-              </Link>
-            </div>
+          <div className="flex justify-center mt-8 mb-4">
+            <Link
+              to="/shop"
+              className="inline-block bg-black text-white px-8 py-3 rounded-lg font-semibold text-sm uppercase tracking-wide hover:bg-black-100 transition-all duration-300 transform hover:scale-105 shadow-lg border border-gray-300"
+            >
+              EXPLORE ALL LOOKS
+            </Link>
+          </div>
           )}
         </div>
       </section>
