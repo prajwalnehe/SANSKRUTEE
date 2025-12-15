@@ -238,7 +238,7 @@ const SignUp = () => {
                 <button
                   type="button"
                   onClick={() => {
-                    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:7000';
+                    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
                     window.location.href = `${BACKEND_URL}/api/auth/google`;
                   }}
                   className="flex items-center justify-center w-full px-6 py-2 border border-neutral-200 rounded-lg hover:bg-neutral-50 transition-colors text-sm"
