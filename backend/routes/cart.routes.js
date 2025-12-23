@@ -11,9 +11,9 @@ router.get('/', auth, async (req, res) => {
   res.json(cart || { user: req.userId, items: [] });
 });
 
-// POST /api/cart/add -> { productId, quantity? }
+// POST /api/cart/add -> { productId, quantity?, size? }
 router.post('/add', auth, async (req, res) => {
-  const { productId, quantity = 1 } = req.body || {};
+  const { productId, quantity = 1, size } = req.body || {};
   if (!productId || !mongoose.isValidObjectId(productId)) {
     return res.status(400).json({ message: 'Invalid productId' });
   }
@@ -23,11 +23,16 @@ router.post('/add', auth, async (req, res) => {
   let cart = await Cart.findOne({ user: req.userId });
   if (!cart) cart = new Cart({ user: req.userId, items: [] });
 
-  const idx = cart.items.findIndex(i => i.product.toString() === productId);
+  // Check if item with same product and size already exists
+  const idx = cart.items.findIndex(i => 
+    i.product.toString() === productId && 
+    (i.size || '') === (size || '')
+  );
+  
   if (idx > -1) {
     cart.items[idx].quantity += qty;
   } else {
-    cart.items.push({ product: productId, quantity: qty });
+    cart.items.push({ product: productId, quantity: qty, size: size || undefined });
   }
 
   await cart.save();

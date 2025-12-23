@@ -183,7 +183,7 @@ const Navbar = () => {
           {/* Logo/Brand */}
           <Link to="/" className="flex-shrink-0 z-10">
             <img 
-              src="https://res.cloudinary.com/duc9svg7w/image/upload/v1765301725/Black_and_White_Bold_Line_Minimalist_Design_Studio_Logo_xy9rlu.png" 
+              src="https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766485714/Untitled_design_gpc5ty.svg" 
               alt="STYLEIT Logo" 
               className="h-30 sm:h-40 md:h-40 lg:h-50 w-auto object-contain"
             />

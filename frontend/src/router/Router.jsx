@@ -26,6 +26,7 @@ import AdminProducts from '../pages/admin/AdminProducts';
 import AdminOrders from '../pages/admin/AdminOrders';
 import AdminLayout from '../pages/admin/AdminLayout';
 import AdminAddresses from '../pages/admin/AdminAddresses';
+import AdminOrderDetails from '../pages/admin/AdminOrderDetails';
 
 const isAuthenticated = () => {
   try {
@@ -120,6 +121,7 @@ const Router = () => {
           <Route index element={<AdminDashboard />} />
           <Route path="products" element={<AdminProducts />} />
           <Route path="orders" element={<AdminOrders />} />
+          <Route path="orders/:id" element={<AdminOrderDetails />} />
           <Route path="addresses" element={<AdminAddresses />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />

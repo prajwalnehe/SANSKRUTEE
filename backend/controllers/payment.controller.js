@@ -75,7 +75,7 @@ export const verifyPayment = async (req, res) => {
         const discountPercent = Number(p?.discountPercent) || 0;
         base = Math.round(mrp - (mrp * discountPercent) / 100) || 0;
       }
-      return { product: p._id, quantity: i.quantity, price: base };
+      return { product: p._id, quantity: i.quantity, price: base, size: i.size || undefined };
     });
     const amount = items.reduce((sum, it) => sum + (it.price * it.quantity), 0);
 
@@ -136,7 +136,7 @@ export const createCODOrder = async (req, res) => {
         const discountPercent = Number(p?.discountPercent) || 0;
         base = Math.round(mrp - (mrp * discountPercent) / 100) || 0;
       }
-      return { product: p._id, quantity: i.quantity, price: base };
+      return { product: p._id, quantity: i.quantity, price: base, size: i.size || undefined };
     });
     const amount = items.reduce((sum, it) => sum + (it.price * it.quantity), 0);
 

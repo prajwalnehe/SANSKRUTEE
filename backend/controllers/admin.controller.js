@@ -2,6 +2,42 @@ import { Product } from '../models/product.js';
 import Order from '../models/Order.js';
 import { Address } from '../models/Address.js';
 
+const ORDER_STATUS_ALLOWED = new Set(['pending','confirmed','packed','shipped','delivered','cancelled','returned','created','on_the_way']);
+const PAYMENT_STATUS_ALLOWED = new Set(['paid','pending','failed','refunded']);
+const PAYMENT_METHOD_ALLOWED = new Set(['razorpay','cod','card','upi']);
+
+const mapLegacyStatusToOrderStatus = (status = '') => {
+  const s = String(status).toLowerCase();
+  if (s === 'delivered') return 'delivered';
+  if (s === 'on_the_way' || s === 'paid') return 'confirmed';
+  if (s === 'failed') return 'cancelled';
+  if (s === 'created' || s === 'pending') return 'pending';
+  return 'pending';
+};
+
+const mapLegacyStatusToPaymentStatus = (status = '') => {
+  const s = String(status).toLowerCase();
+  if (s === 'failed') return 'failed';
+  if (s === 'paid') return 'paid';
+  return 'pending';
+};
+
+const normalizeOrder = (orderDoc) => {
+  const o = orderDoc?.toObject ? orderDoc.toObject() : { ...(orderDoc || {}) };
+  const orderStatus = o.orderStatus || mapLegacyStatusToOrderStatus(o.status);
+  const paymentStatus = o.paymentStatus || mapLegacyStatusToPaymentStatus(o.status);
+  const paymentMethod = o.paymentMethod || (o.razorpayPaymentId ? 'razorpay' : 'cod');
+  const transactionId = o.transactionId || o.razorpayPaymentId || o.razorpayOrderId || '';
+
+  return {
+    ...o,
+    orderStatus,
+    paymentStatus,
+    paymentMethod,
+    transactionId,
+  };
+};
+
 export async function createProduct(req, res) {
   try {
     const {
@@ -52,25 +88,82 @@ export async function createProduct(req, res) {
 export async function updateOrderStatus(req, res) {
   try {
     const { id } = req.params;
-    let { status, orderStatus } = req.body || {};
-    const newStatus = (status || orderStatus || '').toString().toLowerCase();
+    const {
+      status,
+      orderStatus,
+      paymentStatus,
+      paymentMethod,
+      transactionId,
+      adminNote,
+      action,
+    } = req.body || {};
 
-    const allowed = new Set(['created','confirmed','on_the_way','delivered','failed','paid']);
-    if (!allowed.has(newStatus)) {
-      return res.status(400).json({ message: 'Invalid status', allowed: Array.from(allowed) });
+    const updates = {};
+    const nextOrderStatus = (orderStatus || status || '').toString().toLowerCase();
+    if (nextOrderStatus) {
+      if (!ORDER_STATUS_ALLOWED.has(nextOrderStatus)) {
+        return res.status(400).json({ message: 'Invalid order status', allowed: Array.from(ORDER_STATUS_ALLOWED) });
+      }
+      updates.orderStatus = nextOrderStatus;
+      // Keep legacy status in sync for backward compatibility
+      updates.status = nextOrderStatus;
+      if (nextOrderStatus === 'cancelled') {
+        updates.paymentStatus = updates.paymentStatus || 'refunded';
+      }
+    }
+
+    if (paymentStatus) {
+      const normalized = String(paymentStatus).toLowerCase();
+      if (!PAYMENT_STATUS_ALLOWED.has(normalized)) {
+        return res.status(400).json({ message: 'Invalid payment status', allowed: Array.from(PAYMENT_STATUS_ALLOWED) });
+      }
+      updates.paymentStatus = normalized;
+      // Reflect into legacy status when possible
+      if (!updates.status && (normalized === 'paid' || normalized === 'failed')) {
+        updates.status = normalized === 'paid' ? 'paid' : 'failed';
+      }
+    }
+
+    if (paymentMethod) {
+      const normalized = String(paymentMethod).toLowerCase();
+      if (!PAYMENT_METHOD_ALLOWED.has(normalized)) {
+        return res.status(400).json({ message: 'Invalid payment method', allowed: Array.from(PAYMENT_METHOD_ALLOWED) });
+      }
+      updates.paymentMethod = normalized;
+    }
+
+    if (transactionId) {
+      updates.transactionId = transactionId;
+    }
+
+    // Support quick actions
+    if (action === 'cancel') {
+      updates.orderStatus = 'cancelled';
+      updates.status = 'cancelled';
+      updates.paymentStatus = updates.paymentStatus || 'pending';
+    }
+    if (action === 'refund') {
+      updates.paymentStatus = 'refunded';
+      if (!updates.orderStatus) updates.orderStatus = 'cancelled';
+      if (!updates.status) updates.status = 'cancelled';
+    }
+
+    const updateOps = { $set: updates };
+    if (adminNote) {
+      updateOps.$push = { adminNotes: { note: adminNote, createdAt: new Date() } };
     }
 
     const order = await Order.findByIdAndUpdate(
       id,
-      { $set: { status: newStatus } },
-      { new: true }
+      updateOps,
+      { new: true, runValidators: true }
     );
 
     if (!order) {
       return res.status(404).json({ message: 'Order not found' });
     }
 
-    return res.json(order);
+    return res.json(normalizeOrder(order));
   } catch (err) {
     return res.status(500).json({ message: 'Failed to update order status', error: err.message });
   }
@@ -110,17 +203,40 @@ export async function adminListOrders(req, res) {
         const addrs = await Address.find({ userId: { $in: userIds } }).lean();
         addrMap = Object.fromEntries(addrs.map(a => [String(a.userId), a]));
       }
-      const enriched = orders.map(o => ({
-        ...o,
-        address: o.shippingAddress || (o.user?._id ? (addrMap[String(o.user._id)] || null) : null),
-      }));
+      const enriched = orders.map(o => {
+        const base = {
+          ...o,
+          address: o.shippingAddress || (o.user?._id ? (addrMap[String(o.user._id)] || null) : null),
+        };
+        return normalizeOrder(base);
+      });
       return res.json(enriched);
     } catch {
       // Fallback: return orders without address enrichment
-      return res.json(orders);
+      return res.json(orders.map(normalizeOrder));
     }
   } catch (err) {
     return res.status(500).json({ message: 'Failed to list orders', error: err.message });
+  }
+}
+
+export async function adminGetOrderById(req, res) {
+  try {
+    const { id } = req.params;
+    const order = await Order.findById(id)
+      .populate('user', 'name email')
+      .populate({
+        path: 'items.product',
+        select: 'title price mrp images product_info',
+      });
+
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    return res.json(normalizeOrder(order));
+  } catch (err) {
+    return res.status(500).json({ message: 'Failed to fetch order', error: err.message });
   }
 }
 

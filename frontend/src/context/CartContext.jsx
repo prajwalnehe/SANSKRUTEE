@@ -51,14 +51,14 @@ export const CartProvider = ({ children }) => {
     return true;
   }, [navigate, location]);
 
-  const addToCart = useCallback(async (productIdOrObj, quantity = 1) => {
+  const addToCart = useCallback(async (productIdOrObj, quantity = 1, size = null) => {
     if (!requireAuth()) return;
     // Accept either productId or a product object
     let productId = productIdOrObj;
     if (typeof productIdOrObj === 'object' && productIdOrObj) {
       productId = productIdOrObj._id || productIdOrObj.id;
     }
-    await api.addToCart({ productId, quantity });
+    await api.addToCart({ productId, quantity, size });
     await loadCart();
   }, [requireAuth, loadCart]);
 

@@ -74,7 +74,7 @@ const ProductDetail = () => {
     if (!product) return;
     setIsAdding(true);
     try {
-      await addToCart(id, quantity);
+      await addToCart(id, quantity, selectedSize);
       alert(`${product.title} ${quantity > 1 ? `(${quantity} items) ` : ''}added to cart!`);
     } catch (error) {
       console.error('Error adding to cart:', error);

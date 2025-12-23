@@ -41,7 +41,7 @@ export const api = {
   },
   // Cart endpoints
   getCart: () => request('/cart', { method: 'GET' }),
-  addToCart: ({ productId, quantity = 1 }) => request('/cart/add', { method: 'POST', body: JSON.stringify({ productId, quantity }) }),
+  addToCart: ({ productId, quantity = 1, size }) => request('/cart/add', { method: 'POST', body: JSON.stringify({ productId, quantity, size }) }),
   removeFromCart: (productId) => request(`/cart/remove/${productId}`, { method: 'DELETE' }),
   // Admin endpoints
   admin: {
@@ -51,43 +51,10 @@ export const api = {
     listProducts: () => request('/admin/products', { method: 'GET' }),
     deleteProduct: (id) => request(`/admin/products/${id}`, { method: 'DELETE' }),
     listOrders: () => request('/admin/orders', { method: 'GET' }),
+    getOrder: (id) => request(`/admin/orders/${id}`, { method: 'GET' }),
     listAddresses: () => request('/admin/addresses', { method: 'GET' }),
-    updateOrderStatus: async (id, status) => {
-      const base = `${API_BASE_URL}`;
-      const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
-      const isCookieSession = token === 'cookie' || (token && !token.includes('.'));
-      const headers = {
-        'Content-Type': 'application/json',
-        ...(!isCookieSession && token ? { Authorization: `Bearer ${token}` } : {}),
-      };
-      const payloadVariants = [ { status }, { orderStatus: status } ];
-      const opts = (method, body) => ({ method, headers, body: JSON.stringify(body), credentials: 'include' });
-      const tryRoutes = [
-        { path: `/admin/orders/${id}/status`, methods: ['PUT','POST','PATCH'] },
-        { path: `/admin/orders/${id}`, methods: ['PATCH','PUT'] },
-        { path: `/orders/${id}/status`, methods: ['PUT','POST','PATCH'] },
-        { path: `/orders/${id}`, methods: ['PATCH','PUT'] },
-        { path: `/admin/order-status/${id}`, methods: ['PUT','POST'] },
-      ];
-      let lastErr;
-      for (const route of tryRoutes) {
-        for (const method of route.methods) {
-          for (const body of payloadVariants) {
-            try {
-              const url = `${base}${route.path}`;
-              const res = await fetch(url, opts(method, body));
-              const text = await res.text();
-              let data; try { data = text ? JSON.parse(text) : {}; } catch { data = { message: text }; }
-              if (!res.ok) { lastErr = new Error(`${res.status} ${res.statusText} at ${url}`); continue; }
-              return data;
-            } catch (e) {
-              lastErr = e;
-            }
-          }
-        }
-      }
-      throw lastErr || new Error('Failed to update order status');
-    },
+    updateOrderStatus: (id, status) => request(`/admin/orders/${id}`, { method: 'PATCH', body: JSON.stringify({ orderStatus: status }) }),
+    updateOrder: (id, payload) => request(`/admin/orders/${id}`, { method: 'PATCH', body: JSON.stringify(payload) }),
   },
 };
 
