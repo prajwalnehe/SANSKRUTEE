@@ -221,7 +221,10 @@ const AdminOrders = () => {
                 </div>
                 <div className="text-sm text-gray-800">{o.user?.name}</div>
                 <div className="text-xs text-gray-500">{o.user?.email}</div>
-                <div className="text-xs text-gray-500">{new Date(o.createdAt).toLocaleString()}</div>
+                <div className="text-xs text-gray-500">
+                  <div>{new Date(o.createdAt).toLocaleDateString('en-GB')}</div>
+                  <div className="text-gray-400">{new Date(o.createdAt).toLocaleTimeString('en-GB')}</div>
+                </div>
                 <div className="flex items-center gap-2">
                   <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${orderStatusClass(normalizedStatus(o))}`}>
                     {String(normalizedStatus(o)).replace(/_/g, ' ')}
@@ -266,7 +269,6 @@ const AdminOrders = () => {
                 <tr className="text-left border-b border-rose-100">
                   <th className="p-2 whitespace-nowrap">Order ID</th>
                   <th className="p-2">Customer</th>
-                  <th className="p-2 hidden lg:table-cell">Customer Email</th>
                   <th className="p-2">Order Date</th>
                   <th className="p-2 whitespace-nowrap">Total Amount</th>
                   <th className="p-2">Payment Method</th>
@@ -283,8 +285,10 @@ const AdminOrders = () => {
                       <div className="truncate font-medium">{o.user?.name || 'Customer'}</div>
                       <div className="text-gray-500 text-xs truncate">{renderAddress(o.address)}</div>
                     </td>
-                    <td className="p-2 hidden lg:table-cell text-gray-700">{o.user?.email || '—'}</td>
-                    <td className="p-2 whitespace-nowrap text-gray-700">{new Date(o.createdAt).toLocaleString()}</td>
+                    <td className="p-2 text-gray-700">
+                      <div className="text-sm">{new Date(o.createdAt).toLocaleDateString('en-GB')}</div>
+                      <div className="text-xs text-gray-500">{new Date(o.createdAt).toLocaleTimeString('en-GB')}</div>
+                    </td>
                     <td className="p-2 whitespace-nowrap">{formatINR(o.amount)}</td>
                     <td className="p-2">
                       <span className="px-2 py-0.5 rounded-full border text-xs font-medium text-gray-700">
