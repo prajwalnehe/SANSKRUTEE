@@ -25,16 +25,14 @@ const Shop = () => {
   });
 
   const priceRanges = [
-    { id: 1, label: '₹300 - ₹1,000', min: 300, max: 1000 },
-    { id: 2, label: '₹1,001 - ₹2,000', min: 1001, max: 2000 },
-    { id: 3, label: '₹2,001 - ₹3,000', min: 2001, max: 3000 },
-    { id: 4, label: '₹3,001 - ₹4,000', min: 3001, max: 4000 },
-    { id: 5, label: '₹4,001 - ₹5,000', min: 4001, max: 5000 },
-    { id: 6, label: '₹5,001 - ₹6,000', min: 5001, max: 6000 },
-    { id: 7, label: '₹6,001 - ₹7,000', min: 6001, max: 7000 },
-    { id: 8, label: '₹7,001 - ₹8,000', min: 7001, max: 8000 },
-    { id: 9, label: '₹8,001 - ₹10,000', min: 8001, max: 10000 },
-    { id: 10, label: 'Above ₹10,000', min: 10001, max: Infinity },
+    { id: 0, label: '₹99 - ₹200', min: 99, max: 200 },
+    { id: 1, label: '₹201 - ₹400', min: 201, max: 400 },
+    { id: 2, label: '₹401 - ₹600', min: 401, max: 600 },
+    { id: 3, label: '₹601 - ₹800', min: 601, max: 800 },
+    { id: 4, label: '₹801 - ₹1,000', min: 801, max: 1000 },
+    { id: 5, label: '₹1,001 - ₹1,200', min: 1001, max: 1200 },
+    { id: 6, label: '₹1,201 - ₹1,500', min: 1201, max: 1500 },
+    { id: 7, label: 'Above ₹1,500', min: 1501, max: Infinity },
   ];
 
   // Fetch all products
