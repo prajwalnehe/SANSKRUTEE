@@ -1,23 +1,48 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 // FaHeart is used for the favorite icon seen in the top right of the cards
-import { FaHeart, FaStar, FaChevronLeft, FaChevronRight, FaSpinner } from 'react-icons/fa'; 
+import { FaHeart, FaStar, FaChevronLeft, FaChevronRight, FaSpinner, FaDatabase } from 'react-icons/fa'; 
 import { fetchSarees } from '../services/api';
+import { getCachedProducts, setCachedProducts } from '../utils/cache';
 
 const FeaturedProducts = ({ category = 'shirts', layout = 'scroll', maxProducts = 8 }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadedFromCache, setLoadedFromCache] = useState(false);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
   const scrollContainerRef = useRef(null);
   const navigate = useNavigate();
   const isGridLayout = layout === 'grid';
 
+  // Get cache key for this category
+  const getCacheKey = () => {
+    const cat = category || 'all';
+    return `featured_products_cache_${cat}`;
+  };
+
   useEffect(() => {
     const loadProducts = async () => {
       try {
         setLoading(true);
-        // Pass empty string to fetch all products from all categories
+        
+        // Check cache first
+        const cacheKey = getCacheKey();
+        const cachedProducts = await getCachedProducts(cacheKey);
+        
+        if (cachedProducts && cachedProducts.length > 0) {
+          // Use cached data
+          const productList = isGridLayout ? (cachedProducts || []).slice(0, maxProducts) : (cachedProducts || []);
+          setProducts(productList);
+          setLoadedFromCache(true);
+          setLoading(false);
+          
+          // Hide cache message after 3 seconds
+          setTimeout(() => setLoadedFromCache(false), 3000);
+          return;
+        }
+
+        // No cache, fetch from API
         const response = await fetchSarees(category || '');
         
         // Handle both old format (array) and new format (object with products and pagination)
@@ -30,12 +55,25 @@ const FeaturedProducts = ({ category = 'shirts', layout = 'scroll', maxProducts 
           data = response;
         }
         
+        // Cache the products
+        await setCachedProducts(cacheKey, data);
+        
         // Limit products for grid layout, show all for scroll layout
         const productList = isGridLayout ? (data || []).slice(0, maxProducts) : (data || []);
         setProducts(productList);
       } catch (error) {
         console.error('Error fetching products:', error);
-        setProducts([]);
+        // Try cache as fallback
+        const cacheKey = getCacheKey();
+        const cachedProducts = await getCachedProducts(cacheKey);
+        if (cachedProducts && cachedProducts.length > 0) {
+          const productList = isGridLayout ? (cachedProducts || []).slice(0, maxProducts) : (cachedProducts || []);
+          setProducts(productList);
+          setLoadedFromCache(true);
+          setTimeout(() => setLoadedFromCache(false), 3000);
+        } else {
+          setProducts([]);
+        }
       } finally {
         setLoading(false);
       }
@@ -129,6 +167,15 @@ const FeaturedProducts = ({ category = 'shirts', layout = 'scroll', maxProducts 
     return (
       <section className="py-8 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Cache loaded message */}
+          {loadedFromCache && (
+            <div className="mb-4 flex justify-center">
+              <div className="inline-flex items-center gap-2 bg-green-50 text-green-700 px-4 py-2 rounded-full text-sm font-medium animate-fade-in">
+                <FaDatabase className="text-green-600" />
+                <span>Loaded from cache</span>
+              </div>
+            </div>
+          )}
           {/* Grid Container - 2 rows, responsive columns */}
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6">
             {products.map((product) => (

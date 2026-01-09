@@ -8,6 +8,7 @@ import { api } from '../utils/api';
 import FeaturedProducts from '../components/FeaturedProducts'; 
 import CategoryShowcase from '../components/CategoryShowcase';
 import TrendingNow from '../components/TrendingNow';
+import CacheConsent from '../components/CacheConsent';
 
 const Home = () => {
   const [heroSliderData, setHeroSliderData] = useState({
@@ -160,6 +161,9 @@ const Home = () => {
 
       {/* 5. Mobile Bottom Navigation - Kept at the bottom for mobile UX */}
       <MobileBottomNav />
+
+      {/* Cache Consent Banner - Shows only once */}
+      <CacheConsent />
     </div>
   );
 };

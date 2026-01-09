@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaRupeeSign, FaHeart, FaRegHeart, FaSpinner } from 'react-icons/fa';
 import { fetchSarees } from '../services/api';
+import { getCachedProducts, setCachedProducts } from '../utils/cache';
 
 const TrendingNow = () => {
   const [allProducts, setAllProducts] = useState([]); // Store all products
@@ -10,19 +11,43 @@ const TrendingNow = () => {
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [loadedFromCache, setLoadedFromCache] = useState(false);
   const sectionRef = useRef(null);
   const navigate = useNavigate();
 
   const PRODUCTS_PER_PAGE = 20; // Load 20 products at a time
+  const CACHE_KEY = 'trending_products_cache';
 
   // Load initial products
   useEffect(() => {
     const loadProducts = async () => {
       try {
         setLoading(true);
+        
+        // Check cache first
+        const cachedProducts = await getCachedProducts(CACHE_KEY);
+        
+        if (cachedProducts && cachedProducts.length > 0) {
+          // Use cached data
+          const availableProducts = cachedProducts.filter(p => p.images?.image1);
+          setAllProducts(availableProducts);
+          setDisplayedProducts(availableProducts.slice(0, PRODUCTS_PER_PAGE));
+          setHasMore(availableProducts.length > PRODUCTS_PER_PAGE);
+          setLoadedFromCache(true);
+          setLoading(false);
+          
+          // Hide cache message after 3 seconds
+          setTimeout(() => setLoadedFromCache(false), 3000);
+          return;
+        }
+
+        // No cache, fetch from API
         const data = await fetchSarees('');
         // Filter products with images
         const availableProducts = data.filter(p => p.images?.image1);
+        
+        // Cache the products
+        await setCachedProducts(CACHE_KEY, availableProducts);
         
         setAllProducts(availableProducts);
         // Display first batch
@@ -30,6 +55,16 @@ const TrendingNow = () => {
         setHasMore(availableProducts.length > PRODUCTS_PER_PAGE);
       } catch (error) {
         console.error('Error loading trending products:', error);
+        // Try cache as fallback
+        const cachedProducts = await getCachedProducts(CACHE_KEY);
+        if (cachedProducts && cachedProducts.length > 0) {
+          const availableProducts = cachedProducts.filter(p => p.images?.image1);
+          setAllProducts(availableProducts);
+          setDisplayedProducts(availableProducts.slice(0, PRODUCTS_PER_PAGE));
+          setHasMore(availableProducts.length > PRODUCTS_PER_PAGE);
+          setLoadedFromCache(true);
+          setTimeout(() => setLoadedFromCache(false), 3000);
+        }
       } finally {
         setLoading(false);
       }
@@ -167,6 +202,13 @@ const TrendingNow = () => {
           <p className="text-base md:text-lg text-gray-600 font-light italic">
             Serving looks, garma-garam!
           </p>
+          {/* Cache loaded message */}
+          {loadedFromCache && (
+            <div className="mt-4 inline-flex items-center gap-2 bg-green-50 text-green-700 px-4 py-2 rounded-full text-sm font-medium animate-fade-in">
+              <FaDatabase className="text-green-600" />
+              <span>Loaded from cache</span>
+            </div>
+          )}
         </div>
 
         {/* Product Cards */}
