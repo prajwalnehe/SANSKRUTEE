@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 // FaHeart is used for the favorite icon seen in the top right of the cards
-import { FaHeart, FaStar, FaChevronLeft, FaChevronRight, FaSpinner, FaDatabase } from 'react-icons/fa'; 
+import { FaHeart, FaStar, FaChevronLeft, FaChevronRight, FaSpinner } from 'react-icons/fa'; 
 import { fetchSarees } from '../services/api';
 import { getCachedProducts, setCachedProducts } from '../utils/cache';
 
@@ -25,7 +25,8 @@ const FeaturedProducts = ({ category = 'shirts', layout = 'scroll', maxProducts 
     const loadProducts = async () => {
       try {
         setLoading(true);
-        
+        setLoadedFromCache(false);
+
         // Check cache first
         const cacheKey = getCacheKey();
         const cachedProducts = await getCachedProducts(cacheKey);
@@ -63,7 +64,7 @@ const FeaturedProducts = ({ category = 'shirts', layout = 'scroll', maxProducts 
         setProducts(productList);
       } catch (error) {
         console.error('Error fetching products:', error);
-        // Try cache as fallback
+        // Try to use cache even if API fails
         const cacheKey = getCacheKey();
         const cachedProducts = await getCachedProducts(cacheKey);
         if (cachedProducts && cachedProducts.length > 0) {
@@ -167,11 +168,11 @@ const FeaturedProducts = ({ category = 'shirts', layout = 'scroll', maxProducts 
     return (
       <section className="py-8 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Cache loaded message */}
+          {/* Cache message */}
           {loadedFromCache && (
             <div className="mb-4 flex justify-center">
-              <div className="inline-flex items-center gap-2 bg-green-50 text-green-700 px-4 py-2 rounded-full text-sm font-medium animate-fade-in">
-                <FaDatabase className="text-green-600" />
+              <div className="inline-flex items-center gap-2 bg-green-50 border border-green-200 text-green-700 px-4 py-2 rounded-lg text-sm animate-fade-in">
+                <FaSpinner className="text-green-600" />
                 <span>Loaded from cache</span>
               </div>
             </div>

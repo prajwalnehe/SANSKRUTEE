@@ -23,7 +23,8 @@ const TrendingNow = () => {
     const loadProducts = async () => {
       try {
         setLoading(true);
-        
+        setLoadedFromCache(false);
+
         // Check cache first
         const cachedProducts = await getCachedProducts(CACHE_KEY);
         
@@ -55,7 +56,7 @@ const TrendingNow = () => {
         setHasMore(availableProducts.length > PRODUCTS_PER_PAGE);
       } catch (error) {
         console.error('Error loading trending products:', error);
-        // Try cache as fallback
+        // Try to use cache even if API fails
         const cachedProducts = await getCachedProducts(CACHE_KEY);
         if (cachedProducts && cachedProducts.length > 0) {
           const availableProducts = cachedProducts.filter(p => p.images?.image1);
@@ -202,10 +203,10 @@ const TrendingNow = () => {
           <p className="text-base md:text-lg text-gray-600 font-light italic">
             Serving looks, garma-garam!
           </p>
-          {/* Cache loaded message */}
+          {/* Cache message */}
           {loadedFromCache && (
-            <div className="mt-4 inline-flex items-center gap-2 bg-green-50 text-green-700 px-4 py-2 rounded-full text-sm font-medium animate-fade-in">
-              <FaDatabase className="text-green-600" />
+            <div className="mt-4 inline-flex items-center gap-2 bg-green-50 border border-green-200 text-green-700 px-4 py-2 rounded-lg text-sm animate-fade-in">
+              <FaSpinner className="text-green-600" />
               <span>Loaded from cache</span>
             </div>
           )}

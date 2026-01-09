@@ -1,9 +1,10 @@
 /**
  * Cache utility with IndexedDB support (localStorage fallback)
- * Handles cache permission and data storage
+ * Handles product data caching with user consent
  */
 
 const PERMISSION_KEY = 'cache_permission';
+const CACHE_EXPIRY = 60 * 60 * 1000; // 1 hour in milliseconds
 const DB_NAME = 'ProductCacheDB';
 const DB_VERSION = 1;
 const STORE_NAME = 'products';
@@ -12,20 +13,25 @@ let db = null;
 
 /**
  * Initialize IndexedDB
- * @returns {Promise<IDBDatabase>}
  */
-const initIndexedDB = () => {
+const initDB = () => {
   return new Promise((resolve, reject) => {
     if (db) {
       resolve(db);
       return;
     }
 
+    if (!window.indexedDB) {
+      console.log('IndexedDB not supported, using localStorage fallback');
+      resolve(null);
+      return;
+    }
+
     const request = indexedDB.open(DB_NAME, DB_VERSION);
 
     request.onerror = () => {
-      console.warn('IndexedDB not available, falling back to localStorage');
-      resolve(null);
+      console.error('IndexedDB error:', request.error);
+      resolve(null); // Fallback to localStorage
     };
 
     request.onsuccess = () => {
@@ -36,7 +42,8 @@ const initIndexedDB = () => {
     request.onupgradeneeded = (event) => {
       const database = event.target.result;
       if (!database.objectStoreNames.contains(STORE_NAME)) {
-        database.createObjectStore(STORE_NAME, { keyPath: 'key' });
+        const objectStore = database.createObjectStore(STORE_NAME, { keyPath: 'key' });
+        objectStore.createIndex('timestamp', 'timestamp', { unique: false });
       }
     };
   });
@@ -44,7 +51,6 @@ const initIndexedDB = () => {
 
 /**
  * Check if user has granted cache permission
- * @returns {boolean}
  */
 export const hasCachePermission = () => {
   try {
@@ -57,7 +63,6 @@ export const hasCachePermission = () => {
 
 /**
  * Get cache permission status
- * @returns {string|null} - 'accepted', 'rejected', or null
  */
 export const getCachePermission = () => {
   try {
@@ -69,7 +74,6 @@ export const getCachePermission = () => {
 
 /**
  * Set cache permission
- * @param {string} permission - 'accepted' or 'rejected'
  */
 export const setCachePermission = (permission) => {
   try {
@@ -86,7 +90,6 @@ export const setCachePermission = (permission) => {
 
 /**
  * Check if permission dialog should be shown
- * @returns {boolean}
  */
 export const shouldShowPermissionDialog = () => {
   try {
@@ -98,231 +101,217 @@ export const shouldShowPermissionDialog = () => {
 };
 
 /**
- * Get cached products from IndexedDB or localStorage
- * @param {string} cacheKey - The cache key
- * @returns {Promise<Array|null>}
+ * Store data in IndexedDB
  */
-export const getCachedProducts = async (cacheKey) => {
-  if (!hasCachePermission()) {
-    return Promise.resolve(null);
-  }
-
+const storeInIndexedDB = async (key, data) => {
   try {
-    // Try IndexedDB first
-    const database = await initIndexedDB();
-    if (database) {
-      return new Promise((resolve) => {
-        const transaction = database.transaction([STORE_NAME], 'readonly');
-        const store = transaction.objectStore(STORE_NAME);
-        const request = store.get(cacheKey);
+    const database = await initDB();
+    if (!database) return false;
 
-        request.onsuccess = () => {
-          const result = request.result;
-          if (result && result.data && result.timestamp) {
-            const now = Date.now();
-            const CACHE_EXPIRY = 60 * 60 * 1000; // 1 hour
-            if (now - result.timestamp < CACHE_EXPIRY) {
-              console.log(`✅ Loaded from IndexedDB cache: ${cacheKey}`);
-              resolve(result.data);
-            } else {
-              // Expired, delete it
-              deleteCachedProducts(cacheKey);
-              resolve(null);
-            }
-          } else {
-            resolve(null);
-          }
-        };
+    const transaction = database.transaction([STORE_NAME], 'readwrite');
+    const store = transaction.objectStore(STORE_NAME);
+    
+    const cacheData = {
+      key,
+      data,
+      timestamp: Date.now()
+    };
 
-        request.onerror = () => {
-          // Fallback to localStorage
-          try {
-            const cached = localStorage.getItem(cacheKey);
-            if (!cached) {
-              resolve(null);
-              return;
-            }
-
-            const { data, timestamp } = JSON.parse(cached);
-            const now = Date.now();
-            const CACHE_EXPIRY = 60 * 60 * 1000; // 1 hour
-
-            if (now - timestamp < CACHE_EXPIRY) {
-              console.log(`✅ Loaded from localStorage cache: ${cacheKey}`);
-              resolve(data);
-            } else {
-              localStorage.removeItem(cacheKey);
-              resolve(null);
-            }
-          } catch (e) {
-            resolve(null);
-          }
-        };
-      });
-    }
-
-    // Fallback to localStorage (synchronous)
-    const cached = localStorage.getItem(cacheKey);
-    if (!cached) return Promise.resolve(null);
-
-    const { data, timestamp } = JSON.parse(cached);
-    const now = Date.now();
-    const CACHE_EXPIRY = 60 * 60 * 1000; // 1 hour
-
-    if (now - timestamp < CACHE_EXPIRY) {
-      console.log(`✅ Loaded from localStorage cache: ${cacheKey}`);
-      return Promise.resolve(data);
-    } else {
-      localStorage.removeItem(cacheKey);
-      return Promise.resolve(null);
-    }
+    await store.put(cacheData);
+    return true;
   } catch (error) {
-    console.error('Error reading cache:', error);
-    return Promise.resolve(null);
+    console.error('Error storing in IndexedDB:', error);
+    return false;
   }
 };
 
 /**
- * Set cached products in IndexedDB or localStorage
- * @param {string} cacheKey - The cache key
- * @param {Array} products - Products array to cache
+ * Get data from IndexedDB
+ */
+const getFromIndexedDB = async (key) => {
+  try {
+    const database = await initDB();
+    if (!database) return null;
+
+    const transaction = database.transaction([STORE_NAME], 'readonly');
+    const store = transaction.objectStore(STORE_NAME);
+    const request = store.get(key);
+
+    return new Promise((resolve) => {
+      request.onsuccess = () => {
+        const result = request.result;
+        if (!result) {
+          resolve(null);
+          return;
+        }
+
+        const now = Date.now();
+        if (now - result.timestamp < CACHE_EXPIRY) {
+          resolve(result.data);
+        } else {
+          // Expired, delete it
+          const deleteTransaction = database.transaction([STORE_NAME], 'readwrite');
+          const deleteStore = deleteTransaction.objectStore(STORE_NAME);
+          deleteStore.delete(key);
+          resolve(null);
+        }
+      };
+
+      request.onerror = () => {
+        resolve(null);
+      };
+    });
+  } catch (error) {
+    console.error('Error getting from IndexedDB:', error);
+    return null;
+  }
+};
+
+/**
+ * Store data in localStorage (fallback)
+ */
+const storeInLocalStorage = (key, data) => {
+  try {
+    const cacheData = {
+      data,
+      timestamp: Date.now()
+    };
+    localStorage.setItem(key, JSON.stringify(cacheData));
+    return true;
+  } catch (error) {
+    console.error('Error storing in localStorage:', error);
+    return false;
+  }
+};
+
+/**
+ * Get data from localStorage (fallback)
+ */
+const getFromLocalStorage = (key) => {
+  try {
+    const cached = localStorage.getItem(key);
+    if (!cached) return null;
+
+    const { data, timestamp } = JSON.parse(cached);
+    const now = Date.now();
+
+    if (now - timestamp < CACHE_EXPIRY) {
+      return data;
+    } else {
+      localStorage.removeItem(key);
+      return null;
+    }
+  } catch (error) {
+    return null;
+  }
+};
+
+/**
+ * Get cached products
+ */
+export const getCachedProducts = async (cacheKey) => {
+  if (!hasCachePermission()) {
+    return null;
+  }
+
+  // Try IndexedDB first
+  const indexedData = await getFromIndexedDB(cacheKey);
+  if (indexedData) {
+    console.log(`✅ Loaded from IndexedDB cache: ${cacheKey}`);
+    return indexedData;
+  }
+
+  // Fallback to localStorage
+  const localData = getFromLocalStorage(cacheKey);
+  if (localData) {
+    console.log(`✅ Loaded from localStorage cache: ${cacheKey}`);
+    return localData;
+  }
+
+  return null;
+};
+
+/**
+ * Set cached products
  */
 export const setCachedProducts = async (cacheKey, products) => {
   if (!hasCachePermission()) {
     return;
   }
 
-  try {
-    const cacheData = {
-      key: cacheKey,
-      data: products,
-      timestamp: Date.now()
-    };
+  // Try IndexedDB first
+  const indexedSuccess = await storeInIndexedDB(cacheKey, products);
+  if (indexedSuccess) {
+    console.log(`💾 Cached in IndexedDB: ${cacheKey}`);
+    return;
+  }
 
-    // Try IndexedDB first
-    const database = await initIndexedDB();
-    if (database) {
-      return new Promise((resolve) => {
-        const transaction = database.transaction([STORE_NAME], 'readwrite');
-        const store = transaction.objectStore(STORE_NAME);
-        const request = store.put(cacheData);
-
-        request.onsuccess = () => {
-          console.log(`💾 Cached in IndexedDB: ${cacheKey}`);
-          resolve();
-        };
-
-        request.onerror = () => {
-          // Fallback to localStorage
-          try {
-            localStorage.setItem(cacheKey, JSON.stringify(cacheData));
-            console.log(`💾 Cached in localStorage: ${cacheKey}`);
-          } catch (e) {
-            console.error('Error caching in localStorage:', e);
-          }
-          resolve();
-        };
-      });
-    }
-
-    // Fallback to localStorage
-    localStorage.setItem(cacheKey, JSON.stringify(cacheData));
+  // Fallback to localStorage
+  const localSuccess = storeInLocalStorage(cacheKey, products);
+  if (localSuccess) {
     console.log(`💾 Cached in localStorage: ${cacheKey}`);
-  } catch (error) {
-    console.error('Error saving cache:', error);
   }
 };
 
 /**
- * Delete cached products
- * @param {string} cacheKey - The cache key
- */
-export const deleteCachedProducts = async (cacheKey) => {
-  try {
-    const database = await initIndexedDB();
-    if (database) {
-      return new Promise((resolve) => {
-        const transaction = database.transaction([STORE_NAME], 'readwrite');
-        const store = transaction.objectStore(STORE_NAME);
-        const request = store.delete(cacheKey);
-
-        request.onsuccess = () => {
-          resolve();
-        };
-
-        request.onerror = () => {
-          localStorage.removeItem(cacheKey);
-          resolve();
-        };
-      });
-    }
-
-    localStorage.removeItem(cacheKey);
-  } catch (error) {
-    console.error('Error deleting cache:', error);
-  }
-};
-
-/**
- * Clear all product caches
+ * Clear all caches
  */
 export const clearAllCaches = async () => {
   try {
     // Clear IndexedDB
-    const database = await initIndexedDB();
-    if (database) {
-      return new Promise((resolve) => {
+    if (window.indexedDB) {
+      const database = await initDB();
+      if (database) {
         const transaction = database.transaction([STORE_NAME], 'readwrite');
         const store = transaction.objectStore(STORE_NAME);
-        const request = store.clear();
-
-        request.onsuccess = () => {
-          console.log('🗑️ Cleared IndexedDB cache');
-        };
-
-        request.onerror = () => {
-          console.log('Error clearing IndexedDB');
-        };
-
-        // Also clear localStorage
-        const keys = Object.keys(localStorage);
-        keys.forEach(key => {
-          if (key.includes('_cache') || key.includes('cache_')) {
-            localStorage.removeItem(key);
-          }
-        });
-        console.log('🗑️ Cleared localStorage cache');
-        resolve();
-      });
+        await store.clear();
+      }
     }
 
-    // Clear localStorage
+    // Clear localStorage caches
     const keys = Object.keys(localStorage);
-    let cleared = 0;
     keys.forEach(key => {
       if (key.includes('_cache') || key.includes('cache_')) {
         localStorage.removeItem(key);
-        cleared++;
       }
     });
-    console.log(`🗑️ Cleared ${cleared} localStorage cache entries`);
+
+    console.log('🗑️ All caches cleared');
   } catch (error) {
     console.error('Error clearing caches:', error);
   }
 };
 
 /**
- * Manual cache clearing utility
- * Can be called from browser console: window.clearProductCache()
+ * Clear specific cache
  */
-export const clearProductCache = async () => {
-  await clearAllCaches();
-  console.log('✅ All product caches cleared successfully');
-  return true;
+export const clearCache = async (cacheKey) => {
+  try {
+    // Clear from IndexedDB
+    if (window.indexedDB) {
+      const database = await initDB();
+      if (database) {
+        const transaction = database.transaction([STORE_NAME], 'readwrite');
+        const store = transaction.objectStore(STORE_NAME);
+        await store.delete(cacheKey);
+      }
+    }
+
+    // Clear from localStorage
+    localStorage.removeItem(cacheKey);
+    console.log(`🗑️ Cache cleared: ${cacheKey}`);
+  } catch (error) {
+    console.error('Error clearing cache:', error);
+  }
 };
 
-// Make it available globally for manual clearing
+/**
+ * Manual cache clearing utility (can be called from browser console)
+ * Usage: window.clearProductCache()
+ */
 if (typeof window !== 'undefined') {
-  window.clearProductCache = clearProductCache;
-  console.log('💡 Tip: You can clear cache manually by calling window.clearProductCache()');
+  window.clearProductCache = async () => {
+    await clearAllCaches();
+    alert('All product caches cleared successfully!');
+  };
 }
