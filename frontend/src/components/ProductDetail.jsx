@@ -21,6 +21,7 @@ const writeWishlist = (items) => {
 };
 
 const ProductDetail = () => {
+  const FALLBACK_IMAGE = 'https://res.cloudinary.com/dnyp5jknp/image/upload/v1775567474/d3b4e9cd-feaf-4362-9a38-20c30bbb5db9.png';
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToCart } = useCart();
@@ -38,6 +39,11 @@ const ProductDetail = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     const loadProduct = async () => {
       try {
+        if (!id || id === '0' || id === 'undefined' || id === 'null') {
+          navigate('/', { replace: true });
+          setLoading(false);
+          return;
+        }
         setLoading(true);
         const data = await fetchSareeById(id);
         setProduct(data);
@@ -60,7 +66,7 @@ const ProductDetail = () => {
     };
 
     loadProduct();
-  }, [id]);
+  }, [id, navigate]);
 
   // Initialize wishlist state when product loads
   useEffect(() => {
@@ -300,7 +306,7 @@ const ProductDetail = () => {
               onClick={(e) => e.stopPropagation()}
               onError={(e) => {
                 e.target.onerror = null;
-                e.target.src = 'https://via.placeholder.com/600x800?text=Image+Not+Available';
+                e.target.src = FALLBACK_IMAGE;
               }}
             />
           </div>
@@ -316,13 +322,13 @@ const ProductDetail = () => {
             <div className="relative group">
               <div className="relative bg-gray-50 rounded-lg overflow-hidden">
                 <img
-                  src={productImages[0] || 'https://via.placeholder.com/600x800?text=Image+Not+Available'}
+                  src={productImages[0] || FALLBACK_IMAGE}
                   alt={product.title}
                   className="w-full h-auto object-contain cursor-zoom-in"
                   onClick={() => setIsImageModalOpen(true)}
                   onError={(e) => {
                     e.target.onerror = null;
-                    e.target.src = 'https://via.placeholder.com/600x800?text=Image+Not+Available';
+                    e.target.src = FALLBACK_IMAGE;
                   }}
                 />
                 <div 

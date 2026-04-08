@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { searchProducts } from '../services/api';
-import { api } from '../utils/api';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -17,7 +16,6 @@ const Navbar = () => {
   const navigate = useNavigate();
   const { cartCount } = useCart();
   const [wishlistCount, setWishlistCount] = useState(0);
-  const [navbarLogo, setNavbarLogo] = useState('https://res.cloudinary.com/dvkxgrcbv/image/upload/v1766485714/Untitled_design_gpc5ty.svg');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -69,21 +67,6 @@ const Navbar = () => {
     };
     window.addEventListener('storage', onStorage);
     return () => window.removeEventListener('storage', onStorage);
-  }, []);
-
-  useEffect(() => {
-    const loadLogo = async () => {
-      try {
-        const data = await api.getLogo();
-        if (data.navbarLogo) {
-          setNavbarLogo(data.navbarLogo);
-        }
-      } catch (err) {
-        console.error('Failed to load navbar logo:', err);
-        // Keep default logo on error
-      }
-    };
-    loadLogo();
   }, []);
 
   const handleLogout = () => {
@@ -175,14 +158,8 @@ const Navbar = () => {
 
   // Navigation links matching suuupply style
   const navLinks = [
-    { name: 'tshirts', path: '/category/tshirts' },
-    { name: 'Formal shirts', path: '/category/formal-shirts' },
-    { name: 'pants', path: '/category/pants' },
-    { name: 'SHORTS', path: '/category/shorts' },
-    { name: 'shoes', path: '/category/shoes' },
-    { name: 'Sunglasses', path: '/category/sunglasses' },
-    { name: 'Watches', path: '/category/watches' },
-    { name: 'PERFUMES', path: '/category/perfumes' },
+    { name: 'MEN', path: '/category/men' },
+    { name: 'WOMEN', path: '/category/women' },
   ];
 
   const scrollToTop = () => {
@@ -193,36 +170,22 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="relative z-[70] bg-white border-b border-gray-200 border-t-0">
-      <div className="w-full px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12">
-        <div className="flex items-center justify-between h-14 sm:h-16 md:h-18 lg:h-20 gap-2 md:gap-2">
-          {/* Logo/Brand */}
-          <Link to="/" className="flex-shrink-0 z-10">
-            <img 
-              src={navbarLogo} 
-              alt="SANSKRUTEE Logo" 
-              className="h-30 sm:h-40 md:h-40 lg:h-50 w-auto object-contain"
-            />
-          </Link>
-
-          {/* Desktop Navigation Links */}
-          <div className="hidden lg:flex items-center space-x-4 xl:space-x-6 2xl:space-x-8 flex-1 justify-center max-w-4xl mx-4">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                to={link.path}
-                onClick={scrollToTop}
-                className="text-gray-700 hover:text-black transition-colors duration-200 text-xs xl:text-sm uppercase tracking-wide whitespace-nowrap px-1 py-2"
-              >
-                {link.name}
-              </Link>
-            ))}
-          </div>
-
-          {/* Right Side Icons */}
-          <div className="flex items-center space-x-2 sm:space-x-2 md:space-x-2 lg:space-x-3 xl:space-x-4 flex-shrink-0">
-            {/* Search Icon - Desktop */}
-            <div className="hidden md:block relative" ref={searchWrapRefDesktop}>
+    <div className="relative z-[70]">
+      <div className="bg-black text-white text-[10px] sm:text-xs md:text-sm font-medium tracking-wide py-1.5 overflow-hidden whitespace-nowrap">
+        <div className="animate-scroll inline-flex min-w-max">
+          <span className="px-4 sm:px-6">• 1st Order - 50% Off • USE CODE SMELLGOOD5 FOR EXTRA 5% OFF PREPAID ORDERS • GET A FREE SAMPLE ON EVERY ORDER •</span>
+          <span className="px-4 sm:px-6">• 1st Order - 50% Off • USE CODE SMELLGOOD5 FOR EXTRA 5% OFF PREPAID ORDERS • GET A FREE SAMPLE ON EVERY ORDER •</span>
+          <span className="px-4 sm:px-6">• 1st Order - 50% Off • USE CODE SMELLGOOD5 FOR EXTRA 5% OFF PREPAID ORDERS • GET A FREE SAMPLE ON EVERY ORDER •</span>
+          <span className="px-4 sm:px-6">• 1st Order - 50% Off • USE CODE SMELLGOOD5 FOR EXTRA 5% OFF PREPAID ORDERS • GET A FREE SAMPLE ON EVERY ORDER •</span>
+        </div>
+      </div>
+      <nav className="bg-white border-b border-gray-200 border-t-0">
+        <div className="w-full px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12">
+          <div className="flex items-center justify-between h-12 sm:h-14 md:h-16 gap-2 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:h-20">
+          {/* Left: Search + Category Links */}
+          <div className="hidden lg:flex items-center justify-start gap-4 xl:gap-6 2xl:gap-8">
+            {/* Search Icon - Desktop (left of categories) */}
+            <div className="relative pr-2 xl:pr-3" ref={searchWrapRefDesktop}>
               <button
                 onClick={() => setSearchOpen(!searchOpen)}
                 className="p-1.5 sm:p-2 text-gray-700 hover:text-black transition-colors"
@@ -233,7 +196,7 @@ const Navbar = () => {
                 </svg>
               </button>
               {searchOpen && (
-                <div className="absolute right-0 top-full mt-2 w-72 sm:w-80 lg:w-96 bg-white border border-gray-200 rounded-lg shadow-xl z-[80] p-3 sm:p-4">
+                <div className="absolute left-0 top-full mt-2 w-72 sm:w-80 lg:w-96 bg-white border border-gray-200 rounded-lg shadow-xl z-[80] p-3 sm:p-4">
                   <input
                     type="text"
                     placeholder="Search..."
@@ -255,8 +218,10 @@ const Navbar = () => {
                           <button
                             type="button"
                             onClick={() => {
+                              const id = p._id || p.id;
+                              if (!id) return;
                               setSearchOpen(false);
-                              navigate(`/product/${p._id || p.id || ''}`);
+                              navigate(`/product/${id}`);
                             }}
                             className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 text-left"
                           >
@@ -281,29 +246,73 @@ const Navbar = () => {
               )}
             </div>
 
-            {/* Mobile Search - Responsive */}
-            <div className="md:hidden relative flex-1 max-w-[140px] xs:max-w-[160px] sm:max-w-[200px] mx-1 sm:mx-2" ref={searchWrapRefMobile}>
-              <input
-                type="text"
-                placeholder="Search..."
-                value={searchQuery}
-                onChange={(e) => { const v = e.target.value; setSearchQuery(v); setSearchOpen(v.trim().length >= 2); }}
-                onKeyPress={handleSearchKeyPress}
-                onFocus={() => { if (searchQuery.trim().length >= 2) setSearchOpen(true); }}
-                className="w-full px-2 py-1.5 sm:py-2 pl-6 sm:pl-7 pr-2 text-[10px] xs:text-xs sm:text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-1 focus:ring-black transition-all"
-              />
+            {navLinks.map((link) => (
+              <Link
+                key={link.name}
+                to={link.path}
+                onClick={scrollToTop}
+                className="text-gray-700 hover:text-black transition-colors duration-200 text-xs xl:text-sm uppercase tracking-wide whitespace-nowrap px-3 py-2"
+              >
+                {link.name}
+              </Link>
+            ))}
+          </div>
+
+          {/* Center: Brand Logo Text */}
+          <Link to="/" className="z-10 lg:justify-self-center" onClick={scrollToTop}>
+            <span className="text-base sm:text-lg md:text-2xl font-semibold tracking-wide text-black">
+              ArovaPerfume
+            </span>
+          </Link>
+
+          {/* Mobile Categories Between Logo and Icons */}
+          <div className="flex lg:hidden items-center justify-end gap-3 sm:gap-4 ml-auto mr-1">
+            {navLinks.map((link) => (
+              <Link
+                key={`mobile-inline-${link.name}`}
+                to={link.path}
+                onClick={scrollToTop}
+                className="text-[11px] sm:text-xs font-medium uppercase tracking-wide text-gray-700 hover:text-black transition-colors"
+              >
+                {link.name}
+              </Link>
+            ))}
+          </div>
+
+          {/* Right Side Icons */}
+            <div className="flex items-center justify-end gap-2 sm:gap-2 md:gap-2 lg:gap-3 xl:gap-4 flex-shrink-0">
+            {/* Mobile Search Toggle */}
+            <div className="md:hidden relative" ref={searchWrapRefMobile}>
               <button
-                onClick={handleSearch}
-                className="absolute left-1.5 sm:left-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black transition-colors"
+                onClick={() => setSearchOpen((v) => !v)}
+                className="p-1.5 sm:p-2 text-gray-700 hover:text-black transition-colors"
                 type="button"
                 aria-label="Search"
               >
-                <svg className="w-3 h-3 xs:w-3.5 xs:h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </button>
-              {searchOpen && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-[80] overflow-hidden max-h-[70vh]">
+            </div>
+
+            {/* Mobile Search Panel */}
+            {searchOpen && (
+              <div className="md:hidden absolute left-3 right-3 top-full mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-[80] overflow-hidden max-h-[70vh]">
+                <div className="p-3 border-b border-gray-100">
+                  <input
+                    type="text"
+                    placeholder="Search products..."
+                    value={searchQuery}
+                    onChange={(e) => {
+                      const v = e.target.value;
+                      setSearchQuery(v);
+                      setSearchOpen(true);
+                    }}
+                    onKeyPress={handleSearchKeyPress}
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-black"
+                  />
+                </div>
+                <div className="overflow-auto max-h-[50vh]">
                   {searchLoading && (
                     <div className="px-4 py-3 text-sm text-gray-500">Searching…</div>
                   )}
@@ -317,8 +326,10 @@ const Navbar = () => {
                           <button
                             type="button"
                             onClick={() => {
+                              const id = p._id || p.id;
+                              if (!id) return;
                               setSearchOpen(false);
-                              navigate(`/product/${p._id || p.id || ''}`);
+                              navigate(`/product/${id}`);
                             }}
                             className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 text-left"
                           >
@@ -340,8 +351,8 @@ const Navbar = () => {
                     </ul>
                   )}
                 </div>
-              )}
-            </div>
+              </div>
+            )}
 
             {/* User Icon - Hidden on mobile */}
             <div className="hidden md:block">
@@ -393,7 +404,7 @@ const Navbar = () => {
             </Link>
 
             {/* Mobile menu button */}
-            <div className="flex items-center lg:hidden ml-0.5 sm:ml-1">
+            <div className="flex items-center lg:hidden">
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 className="inline-flex items-center justify-center p-1.5 sm:p-2 rounded-md text-gray-700 hover:text-black hover:bg-gray-100 active:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300 transition-all"
@@ -414,11 +425,12 @@ const Navbar = () => {
             </div>
           </div>
         </div>
+        </div>
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div 
-            id="mobile-menu" 
+          <div
+            id="mobile-menu"
             className="lg:hidden py-4 sm:py-6 border-t border-gray-200 bg-white animate-in slide-in-from-top duration-200"
           >
             <nav className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 px-2">
@@ -463,8 +475,8 @@ const Navbar = () => {
             )}
           </div>
         )}
-      </div>
-    </nav>
+      </nav>
+    </div>
   );
 };
 

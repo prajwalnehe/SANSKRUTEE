@@ -1,176 +1,224 @@
 import { Product } from '../models/product.js';
+import mongoose from 'mongoose';
+const normalizeGender = (gender) => {
+  const value = String(gender || '').trim().toLowerCase();
+  if (value === 'men' || value === 'male') return 'Men';
+  if (value === 'women' || value === 'female') return 'Women';
+  if (value === 'unisex') return 'Unisex';
+  return undefined;
+};
 
+const escapeRegex = (value = '') => String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-// Category mapping for URL slugs to database category names
-const CATEGORY_MAPPING = {
-  'tshirts': ['TShirts', 't-shirt', 't-shirt', 'tshirt', 't shirt', 't shirts', 'T-Shirt', 'T-Shirts'],
-  't-shirts': ['TShirts', 't-shirt', 't-shirt', 'tshirt', 't shirt', 't shirts', 'T-Shirt', 'T-Shirts'],
-  't shirt': ['TShirts', 't-shirt', 't-shirt', 'tshirt', 't shirt', 't shirts', 'T-Shirt', 'T-Shirts'],
-  't shirts': ['TShirts', 't-shirt', 't-shirt', 'tshirt', 't shirt', 't shirts', 'T-Shirt', 'T-Shirts'],
-  'shirts': ['shirts', 'shirt', 'Shirts', 'Shirt'],
-  'watches': ['WATCHES', 'Watches', 'watches', 'watch', 'Watch', 'WATCH'],
-  'sunglasses': ['Sunglasses', 'SUNGLASSES', 'sunglasses', 'Sunglass', 'SUNGLASS']
+const normalizeCategoryTerm = (value = '') => {
+  const raw = String(value || '').trim().toLowerCase();
+  if (!raw) return '';
+  const mapped = {
+    perfumes: 'perfume',
+    fragrance: 'perfume',
+    fragrances: 'perfume',
+  };
+  if (mapped[raw]) return mapped[raw];
+  // Basic singularization for common plural inputs
+  if (raw.endsWith('es')) return raw.slice(0, -2);
+  if (raw.endsWith('s')) return raw.slice(0, -1);
+  return raw;
+};
+
+const toImageArray = (images) => {
+  if (Array.isArray(images)) return images.filter(Boolean).map((url) => String(url).trim()).filter(Boolean);
+  if (images && typeof images === 'object') {
+    return Object.values(images).filter(Boolean).map((url) => String(url).trim()).filter(Boolean);
+  }
+  return [];
+};
+
+const mapPayload = (body = {}) => {
+  const images = toImageArray(body.images);
+  const mrp = Number(body?.pricing?.mrp ?? body.mrp ?? 0);
+  const salePrice = Number(body?.pricing?.salePrice ?? body.salePrice ?? body.price ?? mrp);
+  const gender = normalizeGender(body.gender);
+
+  return {
+    title: body.title,
+    brand: body.brand ?? body.product_info?.brand,
+    gender,
+    category: body.category,
+    subcategory: body.subcategory,
+    type: body.type,
+    reviews: {
+      totalReviews: Number(body?.reviews?.totalReviews ?? body.totalReviews ?? 0),
+      rating: Number(body?.reviews?.rating ?? body.rating ?? 0),
+    },
+    pricing: {
+      salePrice,
+      mrp,
+      discountPercent: Number(body?.pricing?.discountPercent ?? body.discountPercent ?? 0),
+      taxIncluded: Boolean(body?.pricing?.taxIncluded ?? body.taxIncluded ?? true),
+    },
+    stock: {
+      quantity: Number(body?.stock?.quantity ?? body.quantity ?? 0),
+      sku: body?.stock?.sku ?? body.sku ?? '',
+    },
+    notes: {
+      topNotes: body?.notes?.topNotes ?? body.topNotes ?? [],
+      middleNotes: body?.notes?.middleNotes ?? body.middleNotes ?? [],
+      baseNotes: body?.notes?.baseNotes ?? body.baseNotes ?? [],
+    },
+    description: body.description,
+    offers: {
+      couponCode: body?.offers?.couponCode ?? body.couponCode ?? '',
+      discount: Number(body?.offers?.discount ?? body.discount ?? 0),
+      applicableOn: body?.offers?.applicableOn ?? body.applicableOn ?? '',
+    },
+    services: {
+      secureTransaction: Boolean(body?.services?.secureTransaction ?? body.secureTransaction ?? true),
+      payOnDelivery: Boolean(body?.services?.payOnDelivery ?? body.payOnDelivery ?? false),
+      easyTracking: Boolean(body?.services?.easyTracking ?? body.easyTracking ?? true),
+      freeDelivery: Boolean(body?.services?.freeDelivery ?? body.freeDelivery ?? false),
+    },
+    shippingAndReturns: body.shippingAndReturns || undefined,
+    images,
+    pincodeServiceable: body.pincodeServiceable,
+  };
+};
+
+const toClientShape = (product) => {
+  const doc = product.toObject ? product.toObject() : product;
+  const gallery = Array.isArray(doc.images) ? doc.images : [];
+  const pricing = doc.pricing || {};
+  const reviews = doc.reviews || {};
+  const stock = doc.stock || {};
+  const notes = doc.notes || {};
+  const offers = doc.offers || {};
+  const services = doc.services || {};
+  return {
+    ...doc,
+    salePrice: pricing.salePrice,
+    mrp: pricing.mrp,
+    discountPercent: pricing.discountPercent,
+    taxIncluded: pricing.taxIncluded,
+    totalReviews: reviews.totalReviews,
+    rating: reviews.rating,
+    quantity: stock.quantity,
+    sku: stock.sku,
+    topNotes: notes.topNotes || [],
+    middleNotes: notes.middleNotes || [],
+    baseNotes: notes.baseNotes || [],
+    couponCode: offers.couponCode || '',
+    discount: offers.discount || 0,
+    applicableOn: offers.applicableOn || '',
+    secureTransaction: services.secureTransaction,
+    payOnDelivery: services.payOnDelivery,
+    easyTracking: services.easyTracking,
+    freeDelivery: services.freeDelivery,
+    imageGallery: gallery,
+    // Keep backward compatibility for current frontend usage.
+    images: { image1: gallery[0] || '', image2: gallery[1] || '', image3: gallery[2] || '' },
+    product_info: { brand: doc.brand || '' },
+    price: pricing.salePrice,
+  };
+};
+
+export const createProduct = async (req, res) => {
+  try {
+    const payload = mapPayload(req.body);
+    const product = await Product.create(payload);
+    return res.status(201).json(toClientShape(product));
+  } catch (error) {
+    return res.status(400).json({ message: 'Failed to create product', error: error.message });
+  }
 };
 
 export const getProducts = async (req, res) => {
   try {
-    // Accept either `subcategory` (preferred) or `category` query param
-    const rawCategory = (req.query.subcategory || req.query.category || '').toString();
-    // normalize slug-like values (e.g., "soft-silk" -> "soft silk") and trim
-    const category = rawCategory.replace(/-/g, ' ').trim();
-    let query = {};
+    const { category, subcategory, gender, q } = req.query;
+    const query = {};
+    const normalizedGender = normalizeGender(gender || category);
 
-    console.log('Received request with query params:', req.query);
-
-    if (category) {
-      // Check if there's a category mapping
-      const normalizedCategory = category.toLowerCase();
-      let searchTerms = [];
-      
-      // Use mapped categories if they exist, otherwise use the original category and try variations
-      if (CATEGORY_MAPPING[normalizedCategory]) {
-        searchTerms = CATEGORY_MAPPING[normalizedCategory];
-      } else {
-        // Fallback: try the category as-is and also try common variations
-        searchTerms = [category, normalizedCategory, category.toLowerCase(), category.toUpperCase()];
-      }
-      
-      // Build regex patterns for all search terms
-      const orConditions = [];
-      
-      // For shirts, we need to match only "shirt" or "shirts" and exclude "tshirt" variations
-      if (normalizedCategory === 'shirts') {
-        // Match exact "shirt" or "shirts" only (not "tshirt" or "TShirts")
-        // Use word boundaries to ensure exact match
-        orConditions.push(
-          { 'category': { $regex: /^shirt$/i } },
-          { 'category': { $regex: /^shirts$/i } },
-          { 'category.name': { $regex: /^shirt$/i } },
-          { 'category.name': { $regex: /^shirts$/i } }
-        );
-      } else {
-        // For tshirts, match all variations including "TShirts"
-        searchTerms.forEach(term => {
-          const re = new RegExp(term, 'i');
-          orConditions.push(
-            { 'category.name': { $regex: re } },
-            { 'category': { $regex: re } },
-            { 'category.slug': { $regex: re } },
-            { 'subcategory': { $regex: re } },
-            { 'tags': { $regex: re } }
-          );
-        });
-      }
-
-      // For shirts, add strict exclusion to prevent matching any Tshirt variations
-      if (normalizedCategory === 'shirts') {
-        query = {
-          $and: [
-            { $or: orConditions },
-            { category: { $ne: 'TShirts' } },
-            { category: { $ne: 'T-Shirts' } },
-            { category: { $ne: 'tshirts' } },
-            { category: { $ne: 't-shirts' } },
-            { category: { $ne: 'TShirt' } },
-            { category: { $ne: 'T-Shirt' } },
-            { category: { $not: { $regex: /tshirt/i } } },
-            { category: { $not: { $regex: /t-shirt/i } } },
-            { category: { $not: { $regex: /t shirt/i } } }
-          ]
-        };
-      } else {
-        query = { $or: orConditions };
-      }
-
-      console.log('Category mapping:', normalizedCategory, '→', searchTerms);
-      console.log('Search query:', JSON.stringify(query, null, 2));
+    if (normalizedGender && category) {
+      const term = normalizeCategoryTerm(category);
+      const categoryRegex = new RegExp(escapeRegex(term), 'i');
+      // For category pages like "men"/"women", allow match by gender OR category text.
+      query.$or = [{ gender: normalizedGender }, { category: { $regex: categoryRegex } }];
+    } else if (normalizedGender) {
+      query.gender = normalizedGender;
+    } else if (category) {
+      const term = normalizeCategoryTerm(category);
+      const categoryRegex = new RegExp(escapeRegex(term), 'i');
+      query.$or = [
+        { category: { $regex: categoryRegex } },
+        { subcategory: { $regex: categoryRegex } },
+        { type: { $regex: categoryRegex } },
+        { title: { $regex: categoryRegex } },
+      ];
     }
 
-    // Get all products (for debugging)
-    const allProducts = await Product.find({});
-    console.log(`Total products in database: ${allProducts.length}`);
-    
-    if (allProducts.length > 0) {
-      console.log('Sample product:', {
-        _id: allProducts[0]._id,
-        title: allProducts[0].title,
-        category: allProducts[0].category,
-        price: allProducts[0].price
-      });
-      
-      // Log all unique categories in the database
-      const categories = [...new Set(allProducts.map(p => 
-        p.category ? (typeof p.category === 'string' ? p.category : p.category.name) : 'None'
-      ))];
-      console.log('All categories in database:', categories);
+    if (subcategory) {
+      query.subcategory = { $regex: new RegExp(escapeRegex(String(subcategory).trim()), 'i') };
     }
 
-    // Execute the query
-    let products = await Product.find(query);
-    console.log(`Found ${products.length} matching products`);
-
-    // Process image URLs to ensure they're absolute
-    products = products.map(product => {
-      const productObj = product.toObject();
-      if (productObj.images && Array.isArray(productObj.images)) {
-        productObj.images = productObj.images.map(img => {
-          if (img && img.url && !img.url.startsWith('http')) {
-            // If the URL is relative, make it absolute
-            const baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT || 7000}`;
-            return {
-              ...img,
-              url: img.url.startsWith('/') ? `${baseUrl}${img.url}` : `${baseUrl}/${img.url}`
-            };
-          }
-          return img;
-        });
+    if (q) {
+      const keyword = String(q).trim();
+      const searchOr = [
+        { title: { $regex: new RegExp(keyword, 'i') } },
+        { brand: { $regex: new RegExp(keyword, 'i') } },
+      ];
+      if (query.$or) {
+        query.$and = [{ $or: query.$or }, { $or: searchOr }];
+        delete query.$or;
+      } else {
+        query.$or = searchOr;
       }
-      return productObj;
-    });
-    
-    res.json(products);
+    }
+
+    const products = await Product.find(query).sort({ createdAt: -1 }).lean();
+    return res.json(products.map(toClientShape));
   } catch (error) {
-    console.error('Error fetching products:', error);
-    res.status(500).json({ 
-      message: 'Error fetching products', 
-      error: error.message,
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-    });
+    return res.status(500).json({ message: 'Failed to fetch products', error: error.message });
   }
 };
 
 export const getProductById = async (req, res) => {
   try {
-    let product = await Product.findById(req.params.id);
-    if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
+    const { id } = req.params;
+    let product = null;
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      product = await Product.findById(id).lean();
+    } else {
+      // Compatibility: allow string _id records inserted directly in MongoDB.
+      product = await Product.collection.findOne({ _id: id });
     }
-
-    // Convert to plain object to modify
-    const productObj = product.toObject();
-    
-    // Process image URLs to ensure they're absolute
-    if (productObj.images && Array.isArray(productObj.images)) {
-      productObj.images = productObj.images.map(img => {
-        if (img && img.url && !img.url.startsWith('http')) {
-          // If the URL is relative, make it absolute
-          const baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT || 6000}`;
-          return {
-            ...img,
-            url: img.url.startsWith('/') ? `${baseUrl}${img.url}` : `${baseUrl}/${img.url}`
-          };
-        }
-        return img;
-      });
-    }
-    
-    res.json(productObj);
+    if (!product) return res.status(404).json({ message: 'Product not found' });
+    return res.json(toClientShape(product));
   } catch (error) {
-    console.error('Error fetching product:', error);
-    res.status(500).json({ 
-      message: 'Error fetching product', 
-      error: error.message,
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-    });
+    return res.status(500).json({ message: 'Failed to fetch product', error: error.message });
+  }
+};
+
+export const updateProduct = async (req, res) => {
+  try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ message: 'Invalid product id' });
+    }
+    const payload = mapPayload(req.body);
+    const product = await Product.findByIdAndUpdate(req.params.id, payload, { new: true, runValidators: true });
+    if (!product) return res.status(404).json({ message: 'Product not found' });
+    return res.json(toClientShape(product));
+  } catch (error) {
+    return res.status(400).json({ message: 'Failed to update product', error: error.message });
+  }
+};
+
+export const deleteProduct = async (req, res) => {
+  try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ message: 'Invalid product id' });
+    }
+    const product = await Product.findByIdAndDelete(req.params.id);
+    if (!product) return res.status(404).json({ message: 'Product not found' });
+    return res.json({ message: 'Product deleted successfully' });
+  } catch (error) {
+    return res.status(500).json({ message: 'Failed to delete product', error: error.message });
   }
 };

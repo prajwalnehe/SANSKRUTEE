@@ -39,6 +39,9 @@ export const fetchSarees = async (category, options = {}) => {
 
 export const fetchSareeById = async (id) => {
   try {
+    if (!id || id === '0' || id === 'undefined' || id === 'null') {
+      throw new Error('Invalid product id');
+    }
     const response = await fetch(`${API_URL}/products/${id}`);
     if (!response.ok) {
       throw new Error('Failed to fetch saree details');

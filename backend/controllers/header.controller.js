@@ -74,12 +74,22 @@ export const searchProducts = async (req, res) => {
       $or: [
         { title: { $regex: query, $options: 'i' } },
         { description: { $regex: query, $options: 'i' } },
-        { 'product_info.brand': { $regex: query, $options: 'i' } },
-        { 'product_info.SareeMaterial': { $regex: query, $options: 'i' } }
+        { brand: { $regex: query, $options: 'i' } },
+        { category: { $regex: query, $options: 'i' } }
       ]
-    }).limit(10).select('title images price mrp discountPercent');
+    }).limit(10).select('title images salePrice mrp discountPercent brand');
 
-    res.json({ results: products });
+    const results = products.map((p) => {
+      const item = p.toObject();
+      return {
+        ...item,
+        imageGallery: item.images || [],
+        images: { image1: item.images?.[0] || '', image2: item.images?.[1] || '', image3: item.images?.[2] || '' },
+        price: item.salePrice,
+      };
+    });
+
+    res.json({ results });
   } catch (error) {
     console.error('Search error:', error);
     res.status(500).json({ message: 'Error performing search', error: error.message });

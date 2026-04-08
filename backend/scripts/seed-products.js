@@ -5,10 +5,13 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/SANSKRUTEE';
+const MONGODB_URI = process.env.MONGODB_URI;
 
 async function seedProducts() {
   try {
+    if (!MONGODB_URI) {
+      throw new Error('Missing MONGODB_URI in backend/.env');
+    }
     // Connect to MongoDB
     await mongoose.connect(MONGODB_URI);
     console.log('Connected to MongoDB');

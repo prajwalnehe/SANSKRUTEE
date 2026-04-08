@@ -57,31 +57,33 @@ export async function createProduct(req, res) {
       return res.status(400).json({ message: 'title, mrp and category are required' });
     }
 
+    const imageGallery = [images.image1, images.image2, images.image3].filter(Boolean);
+    const salePrice = Number(mrp) - (Number(mrp) * (Number(discountPercent) || 0)) / 100;
+
     const payload = {
       title,
+      brand: product_info.brand || '',
+      gender: req.body?.gender || 'Unisex',
+      salePrice: Math.max(0, Number(salePrice.toFixed(2))),
       mrp: Number(mrp),
       discountPercent: Number(discountPercent) || 0,
       description,
       category,
-      product_info: {
-        brand: product_info.brand || '',
-        manufacturer: product_info.manufacturer || '',
-        SareeLength: product_info.SareeLength || '',
-        SareeMaterial: product_info.SareeMaterial || '',
-        SareeColor: product_info.SareeColor || '',
-        IncludedComponents: product_info.IncludedComponents || '',
-      },
-      images: {
-        image1: images.image1,
-        image2: images.image2,
-        image3: images.image3,
-      },
+      type: req.body?.type || '',
+      images: imageGallery,
     };
 
     if (categoryId) payload.categoryId = categoryId;
 
     const product = await Product.create(payload);
-    return res.status(201).json(product);
+    const p = product.toObject();
+    return res.status(201).json({
+      ...p,
+      imageGallery: p.images || [],
+      images: { image1: p.images?.[0] || '', image2: p.images?.[1] || '', image3: p.images?.[2] || '' },
+      product_info: { brand: p.brand || '' },
+      price: p.salePrice,
+    });
   } catch (err) {
     return res.status(500).json({ message: 'Failed to create product', error: err.message });
   }

@@ -372,20 +372,22 @@ const Search = () => {
 
               {/* Product Grid */}
               <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
-                {filteredResults.map((p) => (
+                {filteredResults.map((p) => {
+              const pid = p._id || p.id;
+              return (
               <div
                 key={p._id || p.title}
                 className="group bg-white overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer border border-gray-100 hover:border-pink-100"
               >
-                <Link to={`/product/${p._id || p.id || ''}`} className="block">
+                <Link to={pid ? `/product/${pid}` : '#'} className="block" onClick={(e) => { if (!pid) e.preventDefault(); }}>
                   <div className="relative w-full aspect-[3/4] bg-gray-50">
                     <img
-                      src={p.images?.image1 || p.image || 'https://via.placeholder.com/300x400?text=Image+Not+Available'}
+                      src={p.images?.image1 || p.image || 'https://res.cloudinary.com/dnyp5jknp/image/upload/v1775567474/d3b4e9cd-feaf-4362-9a38-20c30bbb5db9.png'}
                       alt={p.title || p.name || 'Product'}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                       onError={(e) => { 
                         e.target.onerror = null;
-                        e.target.src = 'https://via.placeholder.com/300x400?text=Image+Not+Available'; 
+                        e.target.src = 'https://res.cloudinary.com/dnyp5jknp/image/upload/v1775567474/d3b4e9cd-feaf-4362-9a38-20c30bbb5db9.png'; 
                       }}
                     />
                     {(p.discountPercent > 0 || p.discount) && (
@@ -422,7 +424,8 @@ const Search = () => {
                   </div>
                 </Link>
               </div>
-            ))}
+            );
+            })}
               </div>
             </div>
           </div>

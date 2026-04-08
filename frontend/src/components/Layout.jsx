@@ -3,7 +3,6 @@ import { Outlet } from 'react-router-dom';
 import Header from './Header';
 import Navbar from './Navbar';
 import Footer from './Footer';
-import OfferBanner from './OfferBanner';
 
 const Layout = () => {
   const headerWrapRef = useRef(null);
@@ -24,7 +23,6 @@ const Layout = () => {
     <div className="flex flex-col min-h-screen" style={{ '--app-header-height': `${headerHeight}px` }}>
       {/* Navbar and Header - Fixed at top */}
       <div ref={headerWrapRef} className="fixed top-0 left-0 right-0 z-50 bg-white">
-        <OfferBanner />
         <div className="border-t-0">
           <Navbar />
         </div>

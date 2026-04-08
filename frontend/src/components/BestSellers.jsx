@@ -1,368 +1,120 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FaRupeeSign, FaHeart, FaRegHeart, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { fetchSarees } from '../services/api';
 
 const BestSellers = () => {
+  const FALLBACK_IMAGE = 'https://res.cloudinary.com/dnyp5jknp/image/upload/v1775567474/d3b4e9cd-feaf-4362-9a38-20c30bbb5db9.png';
   const [products, setProducts] = useState([]);
-  const [wishlist, setWishlist] = useState([]);
-  const [isMobile, setIsMobile] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
-  const scrollContainerRef = useRef(null);
-  const scrollIntervalRef = useRef(null);
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let ignore = false;
+
     const loadProducts = async () => {
       try {
-        const data = await fetchSarees('');
-        // Filter products with discounts first, then regular products
-        const productsWithDiscount = data
-          .filter(p => (p.discountPercent > 0 || p.discount > 0) && p.images?.image1);
-        
-        const regularProducts = data
-          .filter(p => p.images?.image1 && !productsWithDiscount.find(prod => prod._id === p._id));
-        
-        // Combine: discount products first, then regular products
-        setProducts([...productsWithDiscount, ...regularProducts]);
-      } catch (error) {
-        console.error('Error loading best sellers:', error);
+        setLoading(true);
+        const response = await fetchSarees('perfumes', { limit: 20 });
+        const list = Array.isArray(response) ? response : response?.products || [];
+        if (!ignore) {
+          setProducts(list);
+        }
+      } catch {
+        if (!ignore) {
+          setProducts([]);
+        }
+      } finally {
+        if (!ignore) {
+          setLoading(false);
+        }
       }
     };
 
     loadProducts();
-    
-    // Load wishlist from localStorage
-    try {
-      const saved = localStorage.getItem('wishlist');
-      if (saved) {
-        setWishlist(JSON.parse(saved));
-      }
-    } catch (e) {
-      console.error('Error loading wishlist:', e);
-    }
-  }, []);
-
-  // Check if mobile
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768); // md breakpoint
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  const checkScrollButtons = () => {
-    const scrollContainer = scrollContainerRef.current;
-    if (!scrollContainer) return;
-
-    const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
-    const currentScroll = scrollContainer.scrollLeft;
-
-    setCanScrollLeft(currentScroll > 0);
-    setCanScrollRight(currentScroll < maxScroll - 1);
-  };
-
-  // Check scroll buttons on mount and when products change
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      checkScrollButtons();
-    }, 100);
-
-    return () => clearTimeout(timeoutId);
-  }, [products, isMobile]);
-
-  // Auto-scroll for mobile and desktop
-  useEffect(() => {
-    if (products.length === 0 || isPaused) {
-      if (scrollIntervalRef.current) {
-        clearInterval(scrollIntervalRef.current);
-        scrollIntervalRef.current = null;
-      }
-      return;
-    }
-
-    const scrollContainer = scrollContainerRef.current;
-    if (!scrollContainer) return;
-
-    // Wait for DOM to be ready and calculate card width
-    const startAutoScroll = () => {
-      const flexContainer = scrollContainer.querySelector('.flex');
-      if (!flexContainer) return;
-
-      const firstCard = flexContainer.querySelector('div');
-      if (!firstCard) return;
-
-      const cardWidth = firstCard.offsetWidth;
-      const gap = 24; // gap-6 = 1.5rem = 24px
-      // Mobile: scroll 1 card at a time (showing 2 cards), Desktop: scroll 4 cards at a time (showing 4 cards)
-      const cardsToScroll = isMobile ? 1 : 4;
-      const scrollAmount = (cardWidth + gap) * cardsToScroll;
-
-      if (scrollIntervalRef.current) {
-        clearInterval(scrollIntervalRef.current);
-      }
-
-      scrollIntervalRef.current = setInterval(() => {
-        if (scrollContainer && !isPaused) {
-          const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
-          const currentScroll = scrollContainer.scrollLeft;
-
-          if (currentScroll >= maxScroll - 1) {
-            // Loop back to start
-            scrollContainer.scrollTo({ left: 0, behavior: 'smooth' });
-          } else {
-            // Scroll cards
-            scrollContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-          }
-        }
-      }, 3000); // Scroll every 3 seconds
-    };
-
-    // Small delay to ensure DOM is ready
-    const timeoutId = setTimeout(startAutoScroll, 100);
-
     return () => {
-      clearTimeout(timeoutId);
-      if (scrollIntervalRef.current) {
-        clearInterval(scrollIntervalRef.current);
-        scrollIntervalRef.current = null;
-      }
+      ignore = true;
     };
-  }, [isMobile, products, isPaused]);
+  }, []);
 
-  const toggleWishlist = (productId, e) => {
-    e.stopPropagation();
-    try {
-      const saved = localStorage.getItem('wishlist');
-      let items = saved ? JSON.parse(saved) : [];
-      
-      if (items.includes(productId)) {
-        items = items.filter(id => id !== productId);
-      } else {
-        items.push(productId);
-      }
-      
-      localStorage.setItem('wishlist', JSON.stringify(items));
-      setWishlist(items);
-    } catch (e) {
-      console.error('Error updating wishlist:', e);
-    }
-  };
+  const bestSellers = useMemo(() => {
+    return [...products]
+      .filter((p) => Boolean(p?._id || p?.id))
+      .sort((a, b) => {
+        const ar = Number(a.rating || 0);
+        const br = Number(b.rating || 0);
+        if (br !== ar) return br - ar;
+        const ac = Number(a.totalReviews || 0);
+        const bc = Number(b.totalReviews || 0);
+        return bc - ac;
+      })
+      .slice(0, 8);
+  }, [products]);
 
-  const calculatePrice = (product) => {
-    if (product.price) return product.price;
-    if (product.mrp && product.discountPercent) {
-      return Math.round(product.mrp - (product.mrp * product.discountPercent / 100));
-    }
-    return product.mrp || 0;
-  };
-
-  const calculateDiscount = (product) => {
-    if (product.discountPercent) return product.discountPercent;
-    if (product.discount) return product.discount;
-    if (product.mrp && product.price) {
-      return Math.round(((product.mrp - product.price) / product.mrp) * 100);
-    }
-    return 0;
-  };
-
-  const handleProductClick = (product) => {
-    navigate(`/product/${product._id}`);
-  };
-
-  const scrollLeft = () => {
-    const scrollContainer = scrollContainerRef.current;
-    if (!scrollContainer) return;
-
-    const flexContainer = scrollContainer.querySelector('.flex');
-    if (!flexContainer) return;
-
-    const firstCard = flexContainer.querySelector('div');
-    if (!firstCard) return;
-
-    const cardWidth = firstCard.offsetWidth;
-    const gap = 24;
-    const cardsToScroll = isMobile ? 1 : 4;
-    const scrollAmount = (cardWidth + gap) * cardsToScroll;
-
-    scrollContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-    setIsPaused(true);
-    setTimeout(() => setIsPaused(false), 3000);
-  };
-
-  const scrollRight = () => {
-    const scrollContainer = scrollContainerRef.current;
-    if (!scrollContainer) return;
-
-    const flexContainer = scrollContainer.querySelector('.flex');
-    if (!flexContainer) return;
-
-    const firstCard = flexContainer.querySelector('div');
-    if (!firstCard) return;
-
-    const cardWidth = firstCard.offsetWidth;
-    const gap = 24;
-    const cardsToScroll = isMobile ? 1 : 4;
-    const scrollAmount = (cardWidth + gap) * cardsToScroll;
-
-    scrollContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    setIsPaused(true);
-    setTimeout(() => setIsPaused(false), 3000);
-  };
-
-  if (products.length === 0) {
-    return null;
-  }
+  if (!loading && bestSellers.length === 0) return null;
 
   return (
-    <section className="py-16 px-4 bg-gray-50">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h2 className="text-5xl md:text-6xl font-serif text-gray-800 mb-3 tracking-wide" style={{ fontFamily: 'serif' }}>
-            Best-sellers
+    <section className="py-12 sm:py-16 bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-center mb-5 sm:mb-6">
+          <Link
+            to="/category/men"
+            className="inline-flex items-center bg-black text-white px-6 py-2.5 text-sm font-medium tracking-wide rounded hover:bg-gray-800 transition-colors"
+          >
+            Shop Now
+          </Link>
+        </div>
+        <div className="text-center mb-8 sm:mb-12">
+          <h2 className="text-2xl sm:text-3xl font-semibold tracking-wide text-[#1f1a17] mb-3">
+            BEST SELLERS
           </h2>
-          <p className="text-base md:text-lg text-gray-600 font-light">
-            Styled for All!
+          <p className="text-sm sm:text-base text-[#6a5d52]">
+            Most loved picks from our premium collection
           </p>
         </div>
 
-        {/* Product Cards - Horizontal Scroll */}
-        <div className="relative -mx-4 px-4">
-          {/* Left Arrow */}
-          {canScrollLeft && (
-            <button
-              onClick={scrollLeft}
-              className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-white rounded-full shadow-lg p-2 md:p-3 hover:bg-gray-50 transition-all opacity-90 hover:opacity-100"
-              aria-label="Scroll left"
-            >
-              <FaChevronLeft className="w-4 h-4 md:w-5 md:h-5 text-gray-700" />
-            </button>
-          )}
+        {loading && (
+          <p className="text-center text-sm text-[#7a6a5d] mb-6">Loading best sellers...</p>
+        )}
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          {bestSellers.map((product) => {
+            const id = product._id || product.id;
+            const price = Number(product.price || product.salePrice || product.mrp || 0);
+            const mrp = Number(product.mrp || 0);
+            const image = product.images?.image1 || product.image || FALLBACK_IMAGE;
+            const rating = Number(product.rating || 0);
+            const reviews = Number(product.totalReviews || 0);
 
-          {/* Right Arrow */}
-          {canScrollRight && (
-            <button
-              onClick={scrollRight}
-              className="absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-white rounded-full shadow-lg p-2 md:p-3 hover:bg-gray-50 transition-all opacity-90 hover:opacity-100"
-              aria-label="Scroll right"
-            >
-              <FaChevronRight className="w-4 h-4 md:w-5 md:h-5 text-gray-700" />
-            </button>
-          )}
-
-          <div 
-            ref={scrollContainerRef}
-            className="overflow-x-auto scrollbar-hide"
-            onTouchStart={() => setIsPaused(true)}
-            onTouchEnd={() => {
-              setTimeout(() => {
-                setIsPaused(false);
-                checkScrollButtons();
-              }, 3000);
-            }}
-            onMouseEnter={() => setIsPaused(true)}
-            onMouseLeave={() => setIsPaused(false)}
-            onScroll={() => {
-              setIsPaused(true);
-              checkScrollButtons();
-              // Clear existing timeout
-              if (scrollIntervalRef.current?.pauseTimeout) {
-                clearTimeout(scrollIntervalRef.current.pauseTimeout);
-              }
-              // Resume after 3 seconds of no scrolling
-              scrollIntervalRef.current = scrollIntervalRef.current || {};
-              scrollIntervalRef.current.pauseTimeout = setTimeout(() => {
-                setIsPaused(false);
-              }, 3000);
-            }}
-          >
-            <div className="flex gap-6" style={{ scrollBehavior: 'smooth' }}>
-            {products.map((product) => {
-              const price = calculatePrice(product);
-              const mrp = product.mrp || 0;
-              const discount = calculateDiscount(product);
-              const isWishlisted = wishlist.includes(product._id);
-
-              return (
-                <div
-                  key={product._id}
-                  className="flex-shrink-0 group bg-white overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer border border-gray-100 w-[calc(50vw-28px)] md:w-[calc(25%-18px)] min-w-[calc(50vw-28px)] md:min-w-[calc(25%-18px)]"
-                  onClick={() => handleProductClick(product)}
-                >
-                {/* Image Container */}
-                <div className="relative aspect-[3/4] bg-gray-100 overflow-hidden">
-                  <img
-                    src={product.images?.image1 || 'https://via.placeholder.com/300x400?text=Image+Not+Available'}
-                    alt={product.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = 'https://via.placeholder.com/300x400?text=Image+Not+Available';
-                    }}
-                  />
-                  
-                  {/* Sale Tag */}
-                  {discount > 0 && (
-                    <div className="absolute top-2 left-2 md:top-3 md:left-3 bg-red-600 text-white text-[10px] md:text-xs font-bold px-1.5 py-0.5 md:px-2.5 md:py-1 rounded">
-                      Sale
-                    </div>
-                  )}
-                  
-                  {/* Heart Icon */}
-                  <button
-                    onClick={(e) => toggleWishlist(product._id, e)}
-                    className="absolute top-2 right-2 md:top-3 md:right-3 bg-white rounded-full p-1 md:p-2 shadow-sm hover:shadow-md transition-all z-10"
-                  >
-                    {isWishlisted ? (
-                      <FaHeart className="text-red-500 w-3 h-3 md:w-4 md:h-4" />
-                    ) : (
-                      <FaRegHeart className="text-gray-700 w-3 h-3 md:w-4 md:h-4" />
-                    )}
-                  </button>
-                </div>
-
-                {/* Product Info */}
-                <div className="p-4 bg-white">
-                  <h3 className="text-sm font-medium text-gray-800 mb-1 line-clamp-2 min-h-[2.5rem]">
-                    {product.title || 'Untitled Product'}
-                  </h3>
-                  <p className="text-xs font-normal text-gray-600 mb-2">
-                    {product.product_info?.brand || ''}
-                  </p>
-                  
-                  {/* Price Section */}
-                  <div className="mb-2">
-                    <div className="flex items-baseline gap-2 mb-1">
-                      <div className="flex items-center">
-                        <FaRupeeSign className="h-3.5 w-3.5 text-gray-900" />
-                        <span className="text-lg font-bold text-gray-900">
-                          {price.toLocaleString('en-IN')}
-                        </span>
+            return (
+              <Link key={id} to={`/product/${id}`} className="group">
+                <div className="rounded-2xl border border-[#eee7e1] bg-[#fcfaf8] overflow-hidden hover:shadow-xl transition-all duration-300">
+                  <div className="relative aspect-[3/4] bg-[#f2ebe6] overflow-hidden">
+                    <img
+                      src={image}
+                      alt={product.title || 'Best seller perfume'}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <span className="absolute top-3 left-3 bg-white/90 text-[#6f5039] text-[10px] px-2 py-1 rounded-full font-semibold tracking-wide">
+                      BEST SELLER
+                    </span>
+                  </div>
+                  <div className="p-4">
+                    <h3 className="text-sm sm:text-base font-semibold text-[#2b231d] line-clamp-1">
+                      {product.title || 'Perfume'}
+                    </h3>
+                    <p className="text-xs text-[#7a6a5d] mt-1">
+                      {product.brand || product.product_info?.brand || 'Arova Perfume'}
+                    </p>
+                    <div className="flex items-center justify-between mt-3">
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-[#4a3023] font-bold">Rs.{price.toLocaleString('en-IN')}</span>
+                        {mrp > price && <span className="text-xs text-gray-400 line-through">Rs.{mrp.toLocaleString('en-IN')}</span>}
                       </div>
-                      {mrp > price && (
-                        <span className="text-sm text-gray-400 line-through">
-                          ₹{mrp.toLocaleString('en-IN')}
-                        </span>
-                      )}
+                      <span className="text-[11px] text-[#5f554d]">{rating.toFixed(1)} ({reviews})</span>
                     </div>
-                    {discount > 0 && (
-                      <span className="text-sm font-semibold text-green-600">
-                        {discount}% OFF
-                      </span>
-                    )}
                   </div>
                 </div>
-              </div>
-              );
-            })}
-            </div>
-          </div>
+              </Link>
+            );
+          })}
         </div>
       </div>
     </section>

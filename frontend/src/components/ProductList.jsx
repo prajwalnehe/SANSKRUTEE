@@ -38,6 +38,7 @@ const writeWishlist = (items) => {
 };
 
 const ProductList = ({ defaultCategory } = {}) => {
+    const FALLBACK_IMAGE = 'https://res.cloudinary.com/dnyp5jknp/image/upload/v1775567474/d3b4e9cd-feaf-4362-9a38-20c30bbb5db9.png';
     const { categoryName, subCategoryName } = useParams();
     const navigate = useNavigate();
     
@@ -325,7 +326,9 @@ const ProductList = ({ defaultCategory } = {}) => {
     }, [categoryName, subCategoryName]);
 
     const handleCardClick = useCallback((product) => {
-        navigate(`/product/${product._id}`);
+        const pid = product?._id || product?.id;
+        if (!pid) return;
+        navigate(`/product/${pid}`);
     }, [navigate]);
 
     // Check if product is in wishlist
@@ -337,6 +340,7 @@ const ProductList = ({ defaultCategory } = {}) => {
     const toggleWishlist = useCallback((product, e) => {
         if (e) {
             e.stopPropagation();
+            e.preventDefault();
         }
         
         const pid = product._id;
@@ -590,23 +594,27 @@ const ProductList = ({ defaultCategory } = {}) => {
                         ) : (
                             <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
                                 {filteredProducts.map((p) => {
-                                    const productTitle = formatProductTitle(p);
-                                    const categoryDisplay = getCategoryDisplay(p);
+                                    const pid = p._id || p.id || p.productId;
                                     const finalPrice = Math.round(p.price || (p.mrp * (1 - (p.discountPercent || 0) / 100)) || p.mrp || 0);
                                     const wishlisted = isWishlisted(p._id);
                                     
                                     return (
-                                        <div
-                                            key={p._id || p.title}
+                                        <Link
+                                            key={pid || p.title}
+                                            to={pid ? `/product/${pid}` : '#'}
                                             className="group bg-white overflow-hidden transition-all duration-300 cursor-pointer"
-                                            onClick={() => handleCardClick(p)}
+                                            onClick={(e) => {
+                                                if (!pid) {
+                                                    e.preventDefault();
+                                                }
+                                            }}
                                         >
                                             <div className="relative w-full aspect-[3/4] bg-gray-50 overflow-hidden">
                                                 <img
-                                                    src={p.images?.image1 || 'https://via.placeholder.com/300x400?text=Image+Not+Available'}
+                                                    src={p.images?.image1 || p.image || FALLBACK_IMAGE}
                                                     alt={p.title}
                                                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                                                    onError={(e) => {e.target.onerror = null; e.target.src = 'https://via.placeholder.com/300x400?text=Image+Not+Available';}}
+                                                    onError={(e) => {e.target.onerror = null; e.target.src = FALLBACK_IMAGE;}}
                                                 />
                                                 
                                                 {/* Heart Icon - Top Right (Always Visible) */}
@@ -653,7 +661,7 @@ const ProductList = ({ defaultCategory } = {}) => {
                                                     )}
                                                 </div>
                                             </div>
-                                        </div>
+                                        </Link>
                                     );
                                 })}
                             </div>

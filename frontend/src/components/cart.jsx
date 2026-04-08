@@ -31,6 +31,7 @@ function Cart() {
   const shippingCost = cartTotal >= 1000 ? 0 : 99;
   const tax = Math.round(cartTotal * 0.05);
   const total = cartTotal + shippingCost + tax;
+  const getProductId = (item) => item?.id || item?._id || item?.productId;
 
   return (
     <div className="min-h-screen bg-gray-50 pb-4">
@@ -80,7 +81,11 @@ function Cart() {
                         src={item.image}
                         alt={item.name}
                         className="w-full h-full object-contain cursor-pointer"
-                        onClick={() => navigate(`/product/${item.id}`)}
+                        onClick={() => {
+                          const pid = getProductId(item);
+                          if (!pid) return;
+                          navigate(`/product/${pid}`);
+                        }}
                       />
                     </div>
 
@@ -88,7 +93,11 @@ function Cart() {
                     <div className="flex-1 min-w-0">
                       <h3 
                         className="text-base font-bold text-gray-900 mb-1 truncate cursor-pointer"
-                        onClick={() => navigate(`/product/${item.id}`)}
+                        onClick={() => {
+                          const pid = getProductId(item);
+                          if (!pid) return;
+                          navigate(`/product/${pid}`);
+                        }}
                       >
                         {item.name}
                       </h3>

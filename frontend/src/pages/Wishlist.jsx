@@ -20,6 +20,8 @@ const writeWishlist = (items) => {
 const Wishlist = () => {
   const [items, setItems] = useState([]);
   const navigate = useNavigate();
+  const FALLBACK_IMAGE = 'https://res.cloudinary.com/dnyp5jknp/image/upload/v1775567474/d3b4e9cd-feaf-4362-9a38-20c30bbb5db9.png';
+  const getProductId = (p) => p?._id || p?.id || p?.productId;
 
   useEffect(() => {
     setItems(readWishlist());
@@ -51,19 +53,24 @@ const Wishlist = () => {
     <div className="max-w-7xl mx-auto px-4 py-6">
       <h1 className="text-2xl font-bold text-gray-800 mb-4">My Wishlist</h1>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {items.map((p) => (
-          <div key={p._id} className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
+        {items.map((p, idx) => {
+          const pid = getProductId(p);
+          return (
+          <div key={pid || idx} className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
             <div
               className="relative w-full pt-[125%] bg-gray-50 cursor-pointer"
-              onClick={() => navigate(`/product/${p._id}`)}
+              onClick={() => {
+                if (!pid) return;
+                navigate(`/product/${pid}`);
+              }}
             >
               <img
-                src={p.images?.image1 || 'https://via.placeholder.com/600x800?text=Image+Not+Available'}
+                src={p.images?.image1 || p.image || FALLBACK_IMAGE}
                 alt={p.title}
                 className="absolute inset-0 w-full h-full object-cover"
                 onError={(e) => {
                   e.currentTarget.onerror = null;
-                  e.currentTarget.src = 'https://via.placeholder.com/600x800?text=Image+Not+Available';
+                  e.currentTarget.src = FALLBACK_IMAGE;
                 }}
               />
             </div>
@@ -81,13 +88,16 @@ const Wishlist = () => {
               <div className="mt-3 flex justify-between items-center">
                 <button
                   className="text-sm text-black hover:underline"
-                  onClick={() => navigate(`/product/${p._id}`)}
+                  onClick={() => {
+                    if (!pid) return;
+                    navigate(`/product/${pid}`);
+                  }}
                 >
                   View Details
                 </button>
                 <button
                   className="text-gray-500 hover:text-red-600"
-                  onClick={() => removeItem(p._id)}
+                  onClick={() => removeItem(pid)}
                   title="Remove"
                 >
                   <FaTrash />
@@ -95,7 +105,8 @@ const Wishlist = () => {
               </div>
             </div>
           </div>
-        ))}
+        );
+        })}
       </div>
     </div>
   );
